@@ -1,0 +1,19 @@
+{
+ "name": "llama_llmopt_gpt5mini_anon_s3",
+ "group": "llama_llmopt_gpt5mini_anon",
+ "seed": 3,
+ "phase": "LLMOPT",
+ "budget": 320,
+ "optimizer": "llm",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": true,
+ "runner": "ar_run_classic.py",
+ "llm": {
+  "model": "gpt-5-mini",
+  "params": {
+   "reasoning_effort": "low"
+  },
+  "anonymize": true
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "name": "llama31__recovery_uniform",
+ "row": "uniform",
+ "model": "llama31",
+ "method": "Uniform level 5",
+ "source": "benchmark/llama31/uniform_l5/compact_model",
+ "source_manifest_sha256": "833b40d9e09cd361fc36249c73025a945bb123e72327182c656851209128d29e",
+ "parameters": 4584640512,
+ "policy_file": "benchmark/llama31/uniform_l5/policy.json",
+ "one_shot_results": "benchmark/llama31/uniform_l5/benchmark_results.json",
+ "min_free_mib": 36000,
+ "training": {
+  "tokens": 100000000,
+  "seq_len": 2048,
+  "gradient_accumulation_steps": 16,
+  "learning_rate": 2e-05,
+  "weight_decay": 0.0,
+  "warmup_steps": 100,
+  "lr_scheduler_type": "cosine",
+  "max_grad_norm": 1.0,
+  "seed": 42,
+  "save_every_tokens": 10000000
+ }
+}

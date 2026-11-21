@@ -1,0 +1,8 @@
+{
+ "name": "llama31__magnitude24",
+ "model": "llama31",
+ "group": "magnitude24",
+ "seed": null,
+ "checkpoint": "outputs/semi_structured/2to4_llama3_1_8b_run01/checkpoint_2to4",
+ "out_dir": "benchmark/llama31/magnitude24"
+}

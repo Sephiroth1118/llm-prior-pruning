@@ -1,0 +1,21 @@
+{
+ "name": "hpo_strength015_baseline_s5",
+ "group": "hpo_strength015_baseline",
+ "seed": 5,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "strength015",
+ "arm": "baseline",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16
+}

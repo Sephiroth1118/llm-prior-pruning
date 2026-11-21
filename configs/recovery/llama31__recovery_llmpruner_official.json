@@ -1,0 +1,24 @@
+{
+ "name": "llama31__recovery_llmpruner_official",
+ "row": "llmpruner_official",
+ "model": "llama31",
+ "method": "LLM-Pruner, official importance scores, without its own recovery training",
+ "source": "outputs/llmpruner_reproduction/llama31_target4.6b_bookcorpus_seed42/compact_model",
+ "source_manifest_sha256": "e4ac3359da867e02448d11def30e279d88f9718406ce0b2f31e4d016dc3a1a5e",
+ "parameters": 4600000512,
+ "policy_file": null,
+ "one_shot_results": "outputs/llmpruner_reproduction/llama31_target4.6b_bookcorpus_seed42/benchmark_results.json",
+ "min_free_mib": 36000,
+ "training": {
+  "tokens": 100000000,
+  "seq_len": 2048,
+  "gradient_accumulation_steps": 16,
+  "learning_rate": 2e-05,
+  "weight_decay": 0.0,
+  "warmup_steps": 100,
+  "lr_scheduler_type": "cosine",
+  "max_grad_norm": 1.0,
+  "seed": 42,
+  "save_every_tokens": 10000000
+ }
+}

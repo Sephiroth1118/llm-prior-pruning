@@ -1,0 +1,30 @@
+{
+ "name": "hpo_batch16_llm_s0",
+ "group": "hpo_batch16_llm",
+ "seed": 0,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "batch16",
+ "arm": "llm",
+ "late": "uniform",
+ "allow_api": true,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 16,
+ "init_count": 16
+}

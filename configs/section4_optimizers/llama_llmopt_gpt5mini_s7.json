@@ -1,0 +1,18 @@
+{
+ "name": "llama_llmopt_gpt5mini_s7",
+ "group": "llama_llmopt_gpt5mini",
+ "seed": 7,
+ "phase": "T5_LLAMA",
+ "budget": 320,
+ "optimizer": "llm",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": true,
+ "runner": "ar_run_classic.py",
+ "llm": {
+  "model": "gpt-5-mini",
+  "params": {
+   "reasoning_effort": "low"
+  }
+ }
+}

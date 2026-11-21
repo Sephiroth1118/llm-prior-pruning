@@ -1,0 +1,29 @@
+{
+ "name": "qwen7b_llm_nogp_s2",
+ "group": "qwen7b_llm_nogp",
+ "seed": 2,
+ "phase": "NOGP",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "model": "qwen7b",
+ "pair": "qwen7b_tuned_llm_s2"
+}

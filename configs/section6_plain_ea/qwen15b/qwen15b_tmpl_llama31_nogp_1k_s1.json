@@ -1,0 +1,89 @@
+{
+ "name": "qwen15b_tmpl_llama31_nogp_1k_s1",
+ "group": "qwen15b_tmpl_llama31_nogp_1k",
+ "seed": 1,
+ "phase": "T5_1K",
+ "budget": 1000,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "llama31_converged",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean converged shape of 24 LLaMA-3.1-8B champions: attention rising with depth, MLP heavy to the end"
+    },
+    {
+     "name": "llama31_converged",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean converged shape of 24 LLaMA-3.1-8B champions: attention rising with depth, MLP heavy to the end"
+    }
+   ]
+  },
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "llama31_converged",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean converged shape of 24 LLaMA-3.1-8B champions: attention rising with depth, MLP heavy to the end"
+    },
+    {
+     "name": "llama31_converged",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean converged shape of 24 LLaMA-3.1-8B champions: attention rising with depth, MLP heavy to the end"
+    }
+   ]
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "pair": "qwen_tmpl_transfer_s1",
+ "extends": "qwen15b_tmpl_llama31_nogp_s1"
+}

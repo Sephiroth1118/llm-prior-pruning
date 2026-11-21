@@ -1,0 +1,9 @@
+{
+ "name": "llama31__recovery__llmpruner_official",
+ "model": "llama31",
+ "group": "recovery",
+ "seed": null,
+ "row": "llmpruner_official",
+ "source": "outputs/llmpruner_reproduction/llama31_target4.6b_bookcorpus_seed42/compact_model",
+ "out_dir": "benchmark/llama31/recovery_llmpruner_official"
+}

@@ -1,0 +1,21 @@
+{
+ "name": "hpo_batch4_baseline_s2",
+ "group": "hpo_batch4_baseline",
+ "seed": 2,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "batch4",
+ "arm": "baseline",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16
+}

@@ -1,0 +1,25 @@
+{
+ "name": "tuned2gp_baseline_s7",
+ "group": "tuned2gp_baseline",
+ "seed": 7,
+ "phase": "CONFIRM",
+ "budget": 1000,
+ "allow_api": false,
+ "rounds": [],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "gp": {
+  "warmup": 80,
+  "interval": 80,
+  "window": 80,
+  "minimum_pairs": 8,
+  "program": "corrected_transfer_rule"
+ }
+}

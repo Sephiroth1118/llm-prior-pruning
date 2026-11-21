@@ -1,0 +1,13 @@
+{
+ "name": "qwen_classic_gpbo_1k_s6",
+ "group": "qwen_classic_gpbo_1k",
+ "seed": 6,
+ "phase": "T5_1K",
+ "budget": 1000,
+ "optimizer": "gpbo",
+ "init_count": 16,
+ "model": "qwen15b",
+ "allow_api": false,
+ "runner": "ar_run_classic.py",
+ "extends": "qwen_classic_gpbo_s6"
+}

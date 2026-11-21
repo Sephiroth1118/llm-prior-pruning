@@ -1,0 +1,30 @@
+{
+ "name": "hpo_refine8_random_s0",
+ "group": "hpo_refine8_random",
+ "seed": 0,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "refine8",
+ "arm": "random",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 8,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16
+}

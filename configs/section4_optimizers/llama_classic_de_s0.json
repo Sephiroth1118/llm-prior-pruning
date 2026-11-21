@@ -1,0 +1,11 @@
+{
+ "name": "llama_classic_de_s0",
+ "group": "llama_classic_de",
+ "seed": 0,
+ "phase": "CLASSIC",
+ "budget": 320,
+ "optimizer": "de",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": false
+}

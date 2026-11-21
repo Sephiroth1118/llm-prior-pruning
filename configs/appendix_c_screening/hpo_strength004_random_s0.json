@@ -1,0 +1,30 @@
+{
+ "name": "hpo_strength004_random_s0",
+ "group": "hpo_strength004_random",
+ "seed": 0,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "strength004",
+ "arm": "random",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.004,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.004
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16
+}

@@ -1,0 +1,21 @@
+{
+ "name": "hpo_mu4_baseline_s1",
+ "group": "hpo_mu4_baseline",
+ "seed": 1,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "mu4",
+ "arm": "baseline",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 4,
+ "batch": 8,
+ "init_count": 16
+}

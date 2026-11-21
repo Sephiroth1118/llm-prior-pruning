@@ -1,0 +1,25 @@
+{
+ "name": "olmoe_own_320",
+ "weights": [
+  0.5,
+  1,
+  2,
+  2,
+  0.5,
+  1,
+  2,
+  2
+ ],
+ "rationale": "Mean shape of 8 champions (EA and LLM template, 320 evaluations), quantized to the alphabet",
+ "mean_fractions": [
+  0.2687,
+  0.4422,
+  0.6078,
+  0.7047,
+  0.2124,
+  0.4438,
+  0.5641,
+  0.7672
+ ],
+ "champions": 8
+}

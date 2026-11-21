@@ -1,0 +1,37 @@
+{
+ "name": "llama_tuned_llm_rk_s1",
+ "group": "llama_tuned_llm_rk",
+ "seed": 1,
+ "phase": "REASK_FULL",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "gp": {
+  "warmup": 80,
+  "interval": 80,
+  "window": 80,
+  "minimum_pairs": 8,
+  "program": "corrected_transfer_rule"
+ },
+ "model": "llama31",
+ "template_protocol": "reask",
+ "source_run": "llama_tuned_llm_s1"
+}

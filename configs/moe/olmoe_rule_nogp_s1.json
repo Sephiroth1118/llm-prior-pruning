@@ -1,0 +1,89 @@
+{
+ "name": "olmoe_rule_nogp_s1",
+ "group": "olmoe_rule_nogp",
+ "seed": 1,
+ "phase": "MOE",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "moe_usage_rule",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      2,
+      0.25,
+      0.5,
+      1,
+      2
+     ],
+     "rationale": "Fixed before any run of this template: the less the router uses a group, the more it is pruned, in both depth segments."
+    },
+    {
+     "name": "moe_usage_rule",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      2,
+      0.25,
+      0.5,
+      1,
+      2
+     ],
+     "rationale": "Fixed before any run of this template: the less the router uses a group, the more it is pruned, in both depth segments."
+    }
+   ]
+  },
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "moe_usage_rule",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      2,
+      0.25,
+      0.5,
+      1,
+      2
+     ],
+     "rationale": "Fixed before any run of this template: the less the router uses a group, the more it is pruned, in both depth segments."
+    },
+    {
+     "name": "moe_usage_rule",
+     "weights": [
+      0.25,
+      0.5,
+      1,
+      2,
+      0.25,
+      0.5,
+      1,
+      2
+     ],
+     "rationale": "Fixed before any run of this template: the less the router uses a group, the more it is pruned, in both depth segments."
+    }
+   ]
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "model": "olmoe",
+ "expert_groups": "moe/expert_groups_fineweb.json"
+}

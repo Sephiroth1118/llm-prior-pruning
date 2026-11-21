@@ -1,0 +1,11 @@
+{
+ "name": "llama_classic_tpe_s2",
+ "group": "llama_classic_tpe",
+ "seed": 2,
+ "phase": "CLASSIC",
+ "budget": 320,
+ "optimizer": "tpe",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": false
+}

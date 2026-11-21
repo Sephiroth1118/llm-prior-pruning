@@ -1,0 +1,12 @@
+{
+ "name": "qwen_classic_random_s5",
+ "group": "qwen_classic_random",
+ "seed": 5,
+ "phase": "CLASSIC-Q",
+ "budget": 320,
+ "optimizer": "random",
+ "init_count": 16,
+ "model": "qwen15b",
+ "allow_api": false,
+ "runner": "ar_run_classic.py"
+}

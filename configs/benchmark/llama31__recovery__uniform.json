@@ -1,0 +1,9 @@
+{
+ "name": "llama31__recovery__uniform",
+ "model": "llama31",
+ "group": "recovery",
+ "seed": null,
+ "row": "uniform",
+ "source": "benchmark/llama31/uniform_l5/compact_model",
+ "out_dir": "benchmark/llama31/recovery_uniform"
+}

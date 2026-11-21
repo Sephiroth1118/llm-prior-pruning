@@ -1,0 +1,29 @@
+{
+ "name": "llama31_random_nogp_s1",
+ "group": "llama31_random_nogp",
+ "seed": 1,
+ "phase": "NOGP_T5R",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "model": "llama31",
+ "pair": "llama31_ea_nogp_s1"
+}

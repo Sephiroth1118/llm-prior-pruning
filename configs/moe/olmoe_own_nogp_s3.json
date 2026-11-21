@@ -1,0 +1,89 @@
+{
+ "name": "olmoe_own_nogp_s3",
+ "group": "olmoe_own_nogp",
+ "seed": 3,
+ "phase": "MOE",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "olmoe_own_320",
+     "weights": [
+      0.5,
+      1,
+      2,
+      2,
+      0.5,
+      1,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 8 champions (EA and LLM template, 320 evaluations), quantized to the alphabet"
+    },
+    {
+     "name": "olmoe_own_320",
+     "weights": [
+      0.5,
+      1,
+      2,
+      2,
+      0.5,
+      1,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 8 champions (EA and LLM template, 320 evaluations), quantized to the alphabet"
+    }
+   ]
+  },
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "olmoe_own_320",
+     "weights": [
+      0.5,
+      1,
+      2,
+      2,
+      0.5,
+      1,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 8 champions (EA and LLM template, 320 evaluations), quantized to the alphabet"
+    },
+    {
+     "name": "olmoe_own_320",
+     "weights": [
+      0.5,
+      1,
+      2,
+      2,
+      0.5,
+      1,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 8 champions (EA and LLM template, 320 evaluations), quantized to the alphabet"
+    }
+   ]
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "model": "olmoe",
+ "expert_groups": "moe/expert_groups_fineweb.json"
+}

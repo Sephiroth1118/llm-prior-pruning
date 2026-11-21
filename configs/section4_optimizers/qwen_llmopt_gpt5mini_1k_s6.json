@@ -1,0 +1,19 @@
+{
+ "name": "qwen_llmopt_gpt5mini_1k_s6",
+ "group": "qwen_llmopt_gpt5mini_1k",
+ "seed": 6,
+ "phase": "T5_1K",
+ "budget": 1000,
+ "optimizer": "llm",
+ "init_count": 16,
+ "model": "qwen15b",
+ "allow_api": true,
+ "runner": "ar_run_classic.py",
+ "llm": {
+  "model": "gpt-5-mini",
+  "params": {
+   "reasoning_effort": "low"
+  }
+ },
+ "extends": "qwen_llmopt_gpt5mini_s6"
+}

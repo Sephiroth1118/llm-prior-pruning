@@ -1,0 +1,95 @@
+{
+ "name": "qwen3b_tmpl_human_s1",
+ "group": "qwen3b_tmpl_human",
+ "seed": 1,
+ "phase": "FAMILY",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "literature_rule_of_thumb",
+     "weights": [
+      1,
+      2,
+      2,
+      1,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result, from published rules: (1) LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; (2) He et al. 2024 (What Matters in Transformers? Not All Attention is Needed) find attention far more redundant than MLP, so attention gets twice the MLP intensity. Not derived from any of our searches."
+    },
+    {
+     "name": "literature_rule_of_thumb",
+     "weights": [
+      1,
+      2,
+      2,
+      1,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result, from published rules: (1) LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; (2) He et al. 2024 (What Matters in Transformers? Not All Attention is Needed) find attention far more redundant than MLP, so attention gets twice the MLP intensity. Not derived from any of our searches."
+    }
+   ]
+  },
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "literature_rule_of_thumb",
+     "weights": [
+      1,
+      2,
+      2,
+      1,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result, from published rules: (1) LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; (2) He et al. 2024 (What Matters in Transformers? Not All Attention is Needed) find attention far more redundant than MLP, so attention gets twice the MLP intensity. Not derived from any of our searches."
+    },
+    {
+     "name": "literature_rule_of_thumb",
+     "weights": [
+      1,
+      2,
+      2,
+      1,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result, from published rules: (1) LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; (2) He et al. 2024 (What Matters in Transformers? Not All Attention is Needed) find attention far more redundant than MLP, so attention gets twice the MLP intensity. Not derived from any of our searches."
+    }
+   ]
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "gp": {
+  "warmup": 80,
+  "interval": 80,
+  "window": 80,
+  "minimum_pairs": 8,
+  "program": "corrected_transfer_rule"
+ },
+ "model": "qwen3b"
+}

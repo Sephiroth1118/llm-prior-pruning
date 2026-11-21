@@ -1,0 +1,89 @@
+{
+ "name": "olmo7b_tmpl_qwen15b_nogp_s1",
+ "group": "olmo7b_tmpl_qwen15b_nogp",
+ "seed": 1,
+ "phase": "NOGP",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "qwen15b_converged",
+     "weights": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      2,
+      2,
+      1
+     ],
+     "rationale": "Mean converged shape of 75 Qwen2.5-1.5B champions: attention untouched, MLP mid-heavy, last quarter light"
+    },
+    {
+     "name": "qwen15b_converged",
+     "weights": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      2,
+      2,
+      1
+     ],
+     "rationale": "Mean converged shape of 75 Qwen2.5-1.5B champions: attention untouched, MLP mid-heavy, last quarter light"
+    }
+   ]
+  },
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "qwen15b_converged",
+     "weights": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      2,
+      2,
+      1
+     ],
+     "rationale": "Mean converged shape of 75 Qwen2.5-1.5B champions: attention untouched, MLP mid-heavy, last quarter light"
+    },
+    {
+     "name": "qwen15b_converged",
+     "weights": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      2,
+      2,
+      1
+     ],
+     "rationale": "Mean converged shape of 75 Qwen2.5-1.5B champions: attention untouched, MLP mid-heavy, last quarter light"
+    }
+   ]
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "model": "olmo7b",
+ "pair": "olmo7b_tmpl_qwen15b_s1"
+}

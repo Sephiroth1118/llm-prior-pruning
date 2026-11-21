@@ -1,0 +1,24 @@
+{
+ "name": "llama31__recovery_ours",
+ "row": "ours",
+ "model": "llama31",
+ "method": "Structural prior injection, LLM template, seed 7 (lowest held-out KL)",
+ "source": "benchmark/llama31/compression_llama31_llm_nogp_s7/compact_model",
+ "source_manifest_sha256": "a7c8919f67fb5b2e024ec8278666b4d5e8b037c4534f669089fcc0ff668d48a1",
+ "parameters": 4539682816,
+ "policy_file": "benchmark/llama31/compression_llama31_llm_nogp_s7/policy.json",
+ "one_shot_results": "benchmark/llama31/compression_llama31_llm_nogp_s7/benchmark_results.json",
+ "min_free_mib": 36000,
+ "training": {
+  "tokens": 100000000,
+  "seq_len": 2048,
+  "gradient_accumulation_steps": 16,
+  "learning_rate": 2e-05,
+  "weight_decay": 0.0,
+  "warmup_steps": 100,
+  "lr_scheduler_type": "cosine",
+  "max_grad_norm": 1.0,
+  "seed": 42,
+  "save_every_tokens": 10000000
+ }
+}

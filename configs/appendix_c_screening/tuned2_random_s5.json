@@ -1,0 +1,27 @@
+{
+ "name": "tuned2_random_s5",
+ "group": "tuned2_random",
+ "seed": 5,
+ "phase": "CONFIRM",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16
+}

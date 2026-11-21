@@ -1,0 +1,28 @@
+{
+ "name": "qwen15b_random_nogp_s5",
+ "group": "qwen15b_random_nogp",
+ "seed": 5,
+ "phase": "NOGP_T6",
+ "budget": 1000,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "pair": "tuned2gp_random_s5"
+}

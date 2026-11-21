@@ -1,0 +1,38 @@
+{
+ "name": "hpo_rounds4x1_llm_s2",
+ "group": "hpo_rounds4x1_llm",
+ "seed": 2,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "rounds4x1",
+ "arm": "llm",
+ "late": "uniform",
+ "allow_api": true,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 1
+  },
+  {
+   "source": "llm",
+   "n": 1
+  },
+  {
+   "source": "llm",
+   "n": 1
+  },
+  {
+   "source": "llm",
+   "n": 1
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16
+}

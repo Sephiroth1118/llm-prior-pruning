@@ -1,0 +1,9 @@
+{
+ "name": "llama31__recovery__ours",
+ "model": "llama31",
+ "group": "recovery",
+ "seed": null,
+ "row": "ours",
+ "source": "benchmark/llama31/compression_llama31_llm_nogp_s7/compact_model",
+ "out_dir": "benchmark/llama31/recovery_ours"
+}

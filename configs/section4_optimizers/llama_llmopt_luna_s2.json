@@ -1,0 +1,18 @@
+{
+ "name": "llama_llmopt_luna_s2",
+ "group": "llama_llmopt_luna",
+ "seed": 2,
+ "phase": "LLMOPT",
+ "budget": 320,
+ "optimizer": "llm",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": true,
+ "runner": "ar_run_classic.py",
+ "llm": {
+  "model": "gpt-5.6-luna",
+  "params": {
+   "reasoning_effort": "low"
+  }
+ }
+}

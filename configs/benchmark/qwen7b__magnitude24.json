@@ -1,0 +1,8 @@
+{
+ "name": "qwen7b__magnitude24",
+ "model": "qwen7b",
+ "group": "magnitude24",
+ "seed": null,
+ "checkpoint": "outputs/semi_structured/2to4_qwen2_5_7b_run01/checkpoint_2to4",
+ "out_dir": "benchmark/qwen7b/magnitude24"
+}

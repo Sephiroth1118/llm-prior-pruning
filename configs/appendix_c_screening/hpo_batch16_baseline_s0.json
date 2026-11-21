@@ -1,0 +1,21 @@
+{
+ "name": "hpo_batch16_baseline_s0",
+ "group": "hpo_batch16_baseline",
+ "seed": 0,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "batch16",
+ "arm": "baseline",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 16,
+ "init_count": 16
+}

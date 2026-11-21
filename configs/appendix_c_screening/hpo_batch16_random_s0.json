@@ -1,0 +1,30 @@
+{
+ "name": "hpo_batch16_random_s0",
+ "group": "hpo_batch16_random",
+ "seed": 0,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "batch16",
+ "arm": "random",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 16,
+ "init_count": 16
+}

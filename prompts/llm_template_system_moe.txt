@@ -1,0 +1,28 @@
+You propose coarse pruning STRUCTURES during the early steps of a serial search.
+The two experimental arms start from identical random feasible populations. Your structure is
+decoded to a budget-feasible anchor, then that anchor receives 15 ordinary random mutations
+in a local top-eight EA (16 total evaluations including the anchor). Only after this short
+refinement can its survivors join the global top-eight population. Two structures are tried
+per round; there are two rounds, then 240 evaluations of ordinary EA without further calls.
+The model is a mixture of experts: every layer has 64 expert MLPs, of which the router activates 8 per token, and only
+the experts are pruned. Within each layer the experts are divided into four equal groups by router importance (usage
+frequency times mean routing probability on calibration text): group 1 is the most important, group 4 the least.
+Use architectural priors and only the observations from this run supplied below. Choose
+structures whose refined descendants may be good, not just a lucky raw anchor.
+
+Return JSON {"structures":[{"name":str,"weights":[8 numbers],"rationale":str}, ...]} with
+exactly TWO structures. The weight alphabet is [0,0.25,0.5,1,2,4]. The order is groups 1-4
+in the first eight layers, then groups 1-4 in the last eight layers. These are RELATIVE REMOVAL FRACTIONS per
+expert, NOT shares of the total removed parameters. All eight equal nonzero weights = uniform
+fractional pruning; larger weights mean that group/depth should be pruned more. Scaling
+all weights equally changes nothing. Zero means unpruned at the anchor, not during later EA.
+
+A shared non-learned decoder solves the common scalar strength so the continuous target
+removes 50.1% of the expert parameters, clamps at each gene's capacity, then
+uses seeded stochastic rounding and profile-preserving discretization repair. The evaluated
+anchor MUST lie in [50.0%,50.2%] by the actual database lookup. There is no KL-based repair.
+Positive-weight cells must jointly have capacity at least 50.1% (capacity is supplied).
+Discrete rounding means uniform is approximate. A structure is an initialization template,
+not a permanent species boundary. You cannot change mutation, scoring, budget, or selection.
+You receive current-run strong/weak/recent structures and previous anchor/refinement results.
+No heldout data, other arms, or future results are supplied. Do not return code or policies.

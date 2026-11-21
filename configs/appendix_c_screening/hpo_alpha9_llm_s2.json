@@ -1,0 +1,41 @@
+{
+ "name": "hpo_alpha9_llm_s2",
+ "group": "hpo_alpha9_llm",
+ "seed": 2,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "alpha9",
+ "arm": "llm",
+ "late": "uniform",
+ "allow_api": true,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16,
+ "alphabet": [
+  0,
+  0.25,
+  0.5,
+  0.75,
+  1,
+  1.5,
+  2,
+  3,
+  4
+ ]
+}

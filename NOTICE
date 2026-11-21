@@ -1,0 +1,17 @@
+Code release for "Prior Knowledge or Optimization Ability? Disentangling the Role of Large Language Models in
+Evolutionary Search for Structured Pruning"
+Copyright 2026 The authors of the paper
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product includes software derived from EvoPress (https://github.com/IST-DASLab/EvoPress), licensed under the
+Apache License, Version 2.0: evoprune/common_utils.py, evoprune/data_utils.py, evoprune/dist_utils.py,
+evoprune/linalg_utils.py, evoprune/metrics.py and evoprune/model_utils.py, and the function load_compressed_weights in
+experiments/benchmark.py. The header of each file states the changes.
+
+evoprune/common_utils.py contains the function `to`, adapted from delu (https://github.com/Yura52/delu),
+Copyright (c) 2023 Yura52, licensed under the MIT License. The license text is in third_party/licenses/delu-MIT.txt.
+
+third_party/darwinlm/restore.py rebuilds the level-database builders from files of DarwinLM
+(https://github.com/IST-DASLab/DarwinLM), which declares no license. DarwinLM's files are not part of this repository
+and are not covered by this license; our changes to them (third_party/darwinlm/patches.json) are.

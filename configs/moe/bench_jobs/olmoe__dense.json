@@ -1,0 +1,6 @@
+{
+ "name": "olmoe__dense",
+ "dense": true,
+ "out_dir": "moe/benchmark/olmoe__dense",
+ "expert_groups": "moe/expert_groups_fineweb.json"
+}

@@ -1,0 +1,37 @@
+Original script (paper/scripts/) -> release script | what it produces | run-record groups read (under <records>/runs/ unless stated)
+All scripts: first argument = records directory (or "-" for $SPI_RECORDS); layout in records.py. Run from this directory.
+Seeds: Qwen2.5-1.5B 0,1,2,4-9; other models 0-3 (Llama-3.1-8B up to 0-7 where run); re-ask reruns <group>_rk_s<seed> replace the originals.
+
+Figures
+paper/scripts/fig_framework_svg.py    -> analysis/fig_framework_svg.py    figures/fig_study_design.{svg,pdf} and figures/fig_pipeline.{svg,pdf}, Figs. fig:design and fig:pipeline (schematics, no records; SVG masters in analysis/figures/)
+paper/scripts/fig_kl_ppl.py           -> analysis/fig_kl_ppl.py           figures/fig_kl_ppl.pdf, Fig. fig:kl-ppl; reads reports/benchmark/metrics.json (rows of qwen15b and llama31: benchmark of the champions of the original searches)
+paper/scripts/fig_optimizers_gain.py  -> analysis/fig_optimizers_gain.py  figures/fig_optimizers_gain.pdf, Fig. fig:optimizers; groups qwen15b_ea_nogp, tuned2gp_baseline, qwen_classic_*, qwen_llmopt_* and llama31_ea_nogp, llama_tuned_baseline, llama_classic_*, llama_llmopt_*
+paper/scripts/fig_spi_gain.py         -> analysis/fig_spi_gain.py         figures/fig_spi_gain.pdf, Fig. fig:spi-curves; groups qwen15b_{ea,random,own,llm}_nogp, qwen15b_tmpl_llama31_nogp_1k, qwen15b_own_nogp_1k, qwen_classic_gpbo_1k, qwen_llmopt_gpt5mini_1k, llama31_{ea,random,own,llm}_nogp, llama31_tmpl_qwen15b_nogp, llama_classic_gpbo, llama_llmopt_gpt5mini
+paper/scripts/fig_matrix.py           -> analysis/fig_matrix.py           figures/fig_matrix.pdf, Fig. fig:matrix; groups <model>_{ea,llm,humandepth,own}_nogp, <model>_tmpl_{qwen15b,llama31,olmo7b}_nogp for the eight models
+paper/scripts/fig_match.py            -> analysis/fig_match.py            figures/fig_match.pdf, Fig. fig:match; input: JSON of sec7_analysis.py plain-all (no records)
+paper/scripts/fig_two_scales.py       -> analysis/fig_two_scales.py       figures/fig_two_scales.pdf, Fig. fig:two-scales; input: JSON of sec7_analysis.py plain-all (no records)
+
+Numbers and tables
+paper/scripts/sec4_llm_optimizer.py   -> analysis/sec4_llm_optimizer.py   Tables tab:llm-opt and tab:llm-feasibility (and Section 4.3 text, Holm tests, costs); groups as fig_optimizers_gain plus qwen15b_llm_nogp, llama31_llm_nogp
+paper/scripts/sec4_numbers.py         -> analysis/sec4_numbers.py         Section 4 numbers of the first optimizer comparison (EA vs conventional optimizers); groups tuned2gp_baseline, llama_tuned_baseline, llama_classic_{random,tpe,gpbo,de,pso,ga}
+paper/scripts/sec5_macro_profile.py   -> analysis/sec5_macro_profile.py   macro-structure of the best allocations, Section 5.1 text; groups {qwen,llama}_llmopt_{gpt5mini,deepseek,luna}, qwen15b_ea_nogp, llama31_ea_nogp; flops/qwen15b.json, flops/llama31.json
+paper/scripts/sec6_cost.py            -> analysis/sec6_cost.py            Section 6.3 cost numbers, Table tab:cost (API rows; seconds per evaluation); groups qwen15b_{ea,llm}_nogp, qwen_llmopt_gpt5mini(_1k), llama31_{ea,llm}_nogp, llama_llmopt_gpt5mini
+paper/scripts/sec6_downstream_seeds.py-> analysis/sec6_downstream_seeds.py Table tab:downstream-seeds (appendix); reads benchmark/<model>/compression_<model>_llm_nogp*/benchmark_results.json (llama31, qwen3b, qwen7b)
+paper/scripts/sec6_matrix_plain.py    -> analysis/sec6_matrix_plain.py    Tables tab:matrix and tab:matrix-summary (plain EA, re-ask reruns); groups as fig_matrix; library of sec6_sources_text.py
+paper/scripts/sec6_sources_text.py    -> analysis/sec6_sources_text.py    numbers in the text of Section 6.2 (per-target gains); groups as fig_matrix
+paper/scripts/sec6_tables.py          -> analysis/sec6_tables.py          tab:spi-main with mode plain (groups <model>_{ea,llm,random,own,tmpl_<source>}_nogp, qwen/llama_classic_gpbo, qwen/llama_llmopt_gpt5mini); without a mode, the first (guided-mutation) snapshot of tab:spi-main, tab:matrix, tab:matrix-summary; groups tuned2gp_baseline, llm_tuned2gp, tuned2gp_random, qwen_tmpl_*, qwen_classic_gpbo, llama_tuned_*, llama_tmpl_*, <model>_tuned_*, <model>_tmpl_*
+paper/scripts/sec7_analysis.py        -> analysis/sec7_analysis.py        Section 7 numbers (prior-target match, two scales, Llama diversity); JSON for fig_match.py, fig_two_scales.py and sec7_robustness.py; call with "plain-all"; groups <model>_{ea,llm,own,humandepth}_nogp, <model>_tmpl_<source>_nogp, qwen15b_random_nogp; flops/<model>.json
+paper/scripts/sec7_llm_attention.py   -> analysis/sec7_llm_attention.py   Table tab:llm-attention; groups qwen_llmopt_{gpt5mini,gpt5mini_anon,luna,deepseek}, qwen15b_ea_nogp; flops/qwen15b.json
+paper/scripts/sec7_robustness.py      -> analysis/sec7_robustness.py      robustness checks of Section 7 (within-target / within-source correlations, permutation p-values; cross-validated R^2 on all eight models); input: JSON of sec7_analysis.py plain-all, plus groups as sec7_analysis and llama31_random_nogp
+(new)                                 -> analysis/records.py              record layout and path helpers shared by all scripts
+
+Not copied
+paper/scripts/fig_optimizers.py       replaced by fig_optimizers_gain.py; figures/fig_optimizers.pdf is not included in any .tex file
+paper/scripts/fig_spi_curves.py       replaced by fig_spi_gain.py; figures/fig_spi_curves.pdf is not included in any .tex file
+paper/scripts/sec6_numbers.py         earlier ten-model matrix with the Mistral models; not used in the paper
+paper/scripts/make_submission.py, make_clean_draft.py   manuscript packaging, not part of the analysis
+
+Tables of paper/tables that no script in this directory produces (filled by hand from run records and logs)
+tab_templates.tex, tab_models.tex   templates (models/family_templates.json, jobs) and model specifications (experiments/model_registry.py, run records)
+tab_speed.tex             speed/llama31_speed_best.json;  tab_downstream.tex  benchmark/*/benchmark_results.json, recovery/runs, moe/benchmark (and baseline reproductions)
+tab_llm_compression.tex   literature survey

@@ -1,0 +1,35 @@
+{
+ "name": "hpo_alpha3_random_s4",
+ "group": "hpo_alpha3_random",
+ "seed": 4,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "alpha3",
+ "arm": "random",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16,
+ "alphabet": [
+  0,
+  1,
+  4
+ ]
+}

@@ -1,0 +1,12 @@
+{
+ "name": "qwen_classic_gpbo_s4",
+ "group": "qwen_classic_gpbo",
+ "seed": 4,
+ "phase": "CLASSIC-Q",
+ "budget": 320,
+ "optimizer": "gpbo",
+ "init_count": 16,
+ "model": "qwen15b",
+ "allow_api": false,
+ "runner": "ar_run_classic.py"
+}

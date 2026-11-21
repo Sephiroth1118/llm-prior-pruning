@@ -1,0 +1,28 @@
+{
+ "name": "qwen15b_llm_nogp_s2",
+ "group": "qwen15b_llm_nogp",
+ "seed": 2,
+ "phase": "NOGP",
+ "budget": 1000,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "pair": "llm_tuned2gp_s2"
+}

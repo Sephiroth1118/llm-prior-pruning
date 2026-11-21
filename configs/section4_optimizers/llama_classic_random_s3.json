@@ -1,0 +1,11 @@
+{
+ "name": "llama_classic_random_s3",
+ "group": "llama_classic_random",
+ "seed": 3,
+ "phase": "CLASSIC",
+ "budget": 320,
+ "optimizer": "random",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": false
+}

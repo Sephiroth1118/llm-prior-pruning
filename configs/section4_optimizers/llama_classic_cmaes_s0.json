@@ -1,0 +1,12 @@
+{
+ "name": "llama_classic_cmaes_s0",
+ "group": "llama_classic_cmaes",
+ "seed": 0,
+ "phase": "CLASSIC-CMAES",
+ "budget": 320,
+ "optimizer": "cmaes",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": false,
+ "runner": "ar_run_classic.py"
+}

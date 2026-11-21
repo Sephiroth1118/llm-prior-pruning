@@ -1,0 +1,12 @@
+{
+ "name": "llama_classic_gpbo_s7",
+ "group": "llama_classic_gpbo",
+ "seed": 7,
+ "phase": "T5_LLAMA",
+ "budget": 320,
+ "optimizer": "gpbo",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": false,
+ "runner": "ar_run_classic.py"
+}

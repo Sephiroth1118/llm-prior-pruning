@@ -1,0 +1,89 @@
+{
+ "name": "qwen3b_humandepth_nogp_s2",
+ "group": "qwen3b_humandepth_nogp",
+ "seed": 2,
+ "phase": "NOGP",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "literature_depth_rule",
+     "weights": [
+      0.5,
+      1,
+      1,
+      0.5,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result of this template, from one published rule: LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; attention and MLP are treated alike because the literature disagrees on which is more prunable. Not derived from any of our searches."
+    },
+    {
+     "name": "literature_depth_rule",
+     "weights": [
+      0.5,
+      1,
+      1,
+      0.5,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result of this template, from one published rule: LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; attention and MLP are treated alike because the literature disagrees on which is more prunable. Not derived from any of our searches."
+    }
+   ]
+  },
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "literature_depth_rule",
+     "weights": [
+      0.5,
+      1,
+      1,
+      0.5,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result of this template, from one published rule: LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; attention and MLP are treated alike because the literature disagrees on which is more prunable. Not derived from any of our searches."
+    },
+    {
+     "name": "literature_depth_rule",
+     "weights": [
+      0.5,
+      1,
+      1,
+      0.5,
+      0.5,
+      1,
+      1,
+      0.5
+     ],
+     "rationale": "Fixed before any result of this template, from one published rule: LLM-Pruner prunes only a middle span of layers and keeps the first few and the final layer, so the first and last depth quarters get half intensity; attention and MLP are treated alike because the literature disagrees on which is more prunable. Not derived from any of our searches."
+    }
+   ]
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "model": "qwen3b",
+ "pair": "qwen3b_tmpl_humandepth_s2"
+}

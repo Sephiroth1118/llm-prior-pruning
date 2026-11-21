@@ -1,0 +1,30 @@
+{
+ "name": "hpo_batch4_random_s2",
+ "group": "hpo_batch4_random",
+ "seed": 2,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "batch4",
+ "arm": "random",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 2
+  },
+  {
+   "source": "random",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16
+}

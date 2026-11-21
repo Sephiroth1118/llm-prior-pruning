@@ -1,0 +1,11 @@
+{
+ "name": "llama_classic_pso_s1",
+ "group": "llama_classic_pso",
+ "seed": 1,
+ "phase": "CLASSIC",
+ "budget": 320,
+ "optimizer": "pso",
+ "init_count": 16,
+ "model": "llama31",
+ "allow_api": false
+}

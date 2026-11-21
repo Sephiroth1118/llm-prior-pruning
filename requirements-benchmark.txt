@@ -1,0 +1,14 @@
+# Downstream benchmark environment (experiments/benchmark.py, benchmark_allocation.py, recovery training evaluation).
+# Perplexity and the eight lm-eval tasks were run with these versions; OLMoE needs transformers 4.45.2 (and torch 2.6),
+# because 4.44.2 does not include the OLMoE architecture.
+torch==2.5.1
+transformers==4.44.2
+accelerate==0.30.1
+tokenizers==0.19.1
+safetensors==0.4.5
+numpy==1.26.4
+datasets==2.21.0
+lm_eval==0.4.5
+sentencepiece==0.2.0
+peft==0.12.0
+evaluate==0.4.3

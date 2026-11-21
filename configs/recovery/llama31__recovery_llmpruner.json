@@ -1,0 +1,24 @@
+{
+ "name": "llama31__recovery_llmpruner",
+ "row": "llmpruner",
+ "model": "llama31",
+ "method": "LLM-Pruner, GQA-corrected, without its own recovery training",
+ "source": "outputs/llmpruner_reproduction/llama31_target4.6b_bookcorpus_seed42_gqa_corrected/compact_model",
+ "source_manifest_sha256": "b4d5640d91cfc1ee9662a37768f676713cdcd278e3511ccdf6f175054a7871b2",
+ "parameters": 4600000512,
+ "policy_file": null,
+ "one_shot_results": "outputs/llmpruner_reproduction/llama31_target4.6b_bookcorpus_seed42_gqa_corrected/benchmark_results.json",
+ "min_free_mib": 36000,
+ "training": {
+  "tokens": 100000000,
+  "seq_len": 2048,
+  "gradient_accumulation_steps": 16,
+  "learning_rate": 2e-05,
+  "weight_decay": 0.0,
+  "warmup_steps": 100,
+  "lr_scheduler_type": "cosine",
+  "max_grad_norm": 1.0,
+  "seed": 42,
+  "save_every_tokens": 10000000
+ }
+}

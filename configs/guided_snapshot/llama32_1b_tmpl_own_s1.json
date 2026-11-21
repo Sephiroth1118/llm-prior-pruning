@@ -1,0 +1,95 @@
+{
+ "name": "llama32_1b_tmpl_own_s1",
+ "group": "llama32_1b_tmpl_own",
+ "seed": 1,
+ "phase": "FAMILY",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "llama32_1b_own_320",
+     "weights": [
+      0,
+      0.25,
+      0.25,
+      0.25,
+      2,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 12 champions of Llama-3.2-1B (llama32_1b_tmpl_llama31, llama32_1b_tuned_llm, llama32_1b_tuned_baseline; 320 evaluations), quantized to the alphabet"
+    },
+    {
+     "name": "llama32_1b_own_320",
+     "weights": [
+      0,
+      0.25,
+      0.25,
+      0.25,
+      2,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 12 champions of Llama-3.2-1B (llama32_1b_tmpl_llama31, llama32_1b_tuned_llm, llama32_1b_tuned_baseline; 320 evaluations), quantized to the alphabet"
+    }
+   ]
+  },
+  {
+   "source": "fixed",
+   "n": 2,
+   "templates": [
+    {
+     "name": "llama32_1b_own_320",
+     "weights": [
+      0,
+      0.25,
+      0.25,
+      0.25,
+      2,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 12 champions of Llama-3.2-1B (llama32_1b_tmpl_llama31, llama32_1b_tuned_llm, llama32_1b_tuned_baseline; 320 evaluations), quantized to the alphabet"
+    },
+    {
+     "name": "llama32_1b_own_320",
+     "weights": [
+      0,
+      0.25,
+      0.25,
+      0.25,
+      2,
+      2,
+      2,
+      2
+     ],
+     "rationale": "Mean shape of 12 champions of Llama-3.2-1B (llama32_1b_tmpl_llama31, llama32_1b_tuned_llm, llama32_1b_tuned_baseline; 320 evaluations), quantized to the alphabet"
+    }
+   ]
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "gp": {
+  "warmup": 80,
+  "interval": 80,
+  "window": 80,
+  "minimum_pairs": 8,
+  "program": "corrected_transfer_rule"
+ },
+ "model": "llama32_1b"
+}

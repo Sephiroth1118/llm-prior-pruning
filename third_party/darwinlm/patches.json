@@ -1,0 +1,3569 @@
+{
+ "darwinlm_repository": "https://github.com/IST-DASLab/DarwinLM",
+ "darwinlm_commit": "3596da3973224da83255363a4fbe6757d569dc8c",
+ "note": "ops: [first line, end line (exclusive), replacement] on the lines of the original file. An item of a replacement is one of our lines (a string), a line of the original file (an integer index), a line of another DarwinLM file ([source, index]) or such a line with its indentation set to n spaces ([source, index, n]); source indexes refer to the list 'sources'.",
+ "sources": [
+  {
+   "path": "lmeval.py",
+   "sha256": "584ffd34bdd46982fd6e0812ec8b09878ef669836f4c737614ea302f41a7a29f"
+  },
+  {
+   "path": "evo_struct_prune_search.py",
+   "sha256": "7daaad245ede6c178dc34b24a54788f32b7fd8405a6dea7d885b3143dbc4599b"
+  },
+  {
+   "path": "src/fast_obc_struct.py",
+   "sha256": "aa93c22b27d78137412d91911760e4bcc16e1fc44a93bfc8e9182a283a840d9b"
+  },
+  {
+   "path": "struct_prune.py",
+   "sha256": "b580cc3938bea802cfa161490242e85503b3c323ecc5d01eacc1aa59924844a0"
+  },
+  {
+   "path": "src/common_utils.py",
+   "sha256": "5999b322b6d8e779229352892ead2739ecb48ac26d40bd4ba33615f7dbed3c7b"
+  },
+  {
+   "path": "src/metrics.py",
+   "sha256": "4054a37a1ffd4b65e7d201a13569d09bb7827344373db284e30bd0a423581032"
+  },
+  {
+   "path": "src/struct_pruner.py",
+   "sha256": "cb64c0a2cdc8e075692dc42cd0600b9c5b213aa0734ab01fdf6810c3dc87f57e"
+  },
+  {
+   "path": "src/model_utils.py",
+   "sha256": "2353edb7cc770a2a58d909fa66bd1ec48c5b451be16f5a651c49ca5c14692b15"
+  },
+  {
+   "path": "src/struct_cap.py",
+   "sha256": "87b4da252b87e6c1318a55c3d214bbc822db62888946172e1b04d0a1c9569168"
+  },
+  {
+   "path": "src/dist_utils.py",
+   "sha256": "83e0ddcedd86d46a15704873f935ef9862ac0b1ff56181731101086fbcb27835"
+  }
+ ],
+ "files": [
+  {
+   "target": "experiments/struct_prune.py",
+   "origin": "struct_prune.py",
+   "target_sha256": "c785f9f2a4c642ca0b31e4b99390d636d04bf132a966f68a0afe4b5b3d4df539",
+   "ops": [
+    [
+     11,
+     16,
+     [
+      [
+       0,
+       7
+      ],
+      [
+       0,
+       8
+      ],
+      "sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # repository root: evoprune, zipprune\n",
+      "\n",
+      "from evoprune import dist_utils\n",
+      "from evoprune.data_utils import get_data, get_data_chunks\n",
+      "from zipprune.struct_pruner import ZipLMPruner\n",
+      "from evoprune.struct_cap import SparseStructCAP\n",
+      "from evoprune.common_utils import read_yaml_config, fix_seed\n"
+     ]
+    ],
+    [
+     116,
+     116,
+     [
+      113,
+      "        \"--calibration_chunk_tokens\",\n",
+      [
+       0,
+       180
+      ],
+      [
+       1,
+       210
+      ],
+      "        help=\"If > 0, load calibration data in token chunks and accumulate pruning statistics across chunks.\",\n",
+      115
+     ]
+    ],
+    [
+     145,
+     145,
+     [
+      153,
+      "        \"--streaming_block_inputs\",\n",
+      [
+       0,
+       111
+      ],
+      "        help=\"Recompute block inputs in small chunks instead of caching all calibration activations.\",\n",
+      155,
+      153,
+      "        \"--streaming_batch_size\",\n",
+      [
+       1,
+       270
+      ],
+      [
+       1,
+       210
+      ],
+      "        help=\"Number of calibration samples to stream through prior blocks at a time.\",\n",
+      155
+     ]
+    ],
+    [
+     165,
+     165,
+     [
+      [
+       1,
+       303
+      ],
+      "    local_rank = int(os.environ.get(\"LOCAL_RANK\", \"0\"))\n",
+      "    if torch.cuda.is_available():\n",
+      "        torch.cuda.set_device(local_rank)\n"
+     ]
+    ],
+    [
+     166,
+     168,
+     [
+      "    if dist.is_available() and int(os.environ.get(\"WORLD_SIZE\", \"1\")) > 1:\n",
+      "        dist.init_process_group(backend=\"nccl\" if torch.cuda.is_available() else \"gloo\",\n",
+      "                                init_method=\"env://\", timeout=datetime.timedelta(hours=2.0))\n",
+      "    hessian_group = None\n",
+      "    if dist_utils.is_dist_available_and_initialized() and not args.use_cap:\n",
+      "        hessian_group = dist.new_group(backend=\"gloo\", timeout=datetime.timedelta(hours=2.0))\n"
+     ]
+    ],
+    [
+     171,
+     172,
+     [
+      "    device = f\"cuda:{local_rank}\" if torch.cuda.is_available() else \"cpu\"\n"
+     ]
+    ],
+    [
+     192,
+     202,
+     [
+      "    calibration_data_factory = None\n",
+      "\n",
+      "    def _format_chunk(raw_chunk):\n",
+      [
+       2,
+       89
+      ],
+      "            # Preserve the remainder and allow unequal shards: the Hessian\n",
+      "            # collective accounts for the exact sample counts on all ranks.\n",
+      "            raw_chunk = raw_chunk[rank::world_size]\n",
+      [
+       3,
+       200,
+       8
+      ],
+      "            return [([], {\"input_ids\": input_ids}, input_ids) for input_ids in raw_chunk]\n",
+      "        return [([], {\"input_ids\": input_ids}) for input_ids in raw_chunk]\n",
+      "\n",
+      "    if args.calibration_chunk_tokens and args.calibration_chunk_tokens > 0:\n",
+      [
+       3,
+       200,
+       8
+      ],
+      "            raise ValueError(\"Chunked calibration loading is not currently supported with --use_cap\")\n",
+      "\n",
+      "        def _calibration_data_factory():\n",
+      "            for raw_chunk in get_data_chunks(\n",
+      [
+       1,
+       333,
+       16
+      ],
+      "                args.calibration_tokens,\n",
+      "                args.calibration_chunk_tokens,\n",
+      "                args.calibration_sequence_length,\n",
+      [
+       1,
+       345
+      ],
+      "                train=True,\n",
+      "                seed=args.seed,\n",
+      [
+       3,
+       22,
+       12
+      ],
+      "                formatted = _format_chunk(raw_chunk)\n",
+      "                print(\"len of chunk data is:\", len(formatted))\n",
+      "                if formatted:\n",
+      "                    yield formatted\n",
+      "\n",
+      "        calibration_data = []\n",
+      "        calibration_data_factory = _calibration_data_factory\n"
+     ]
+    ],
+    [
+     203,
+     205,
+     [
+      [
+       3,
+       192,
+       8
+      ],
+      [
+       3,
+       193,
+       12
+      ],
+      222,
+      [
+       3,
+       196,
+       8
+      ],
+      "        calibration_data = _format_chunk(calibration_data)\n"
+     ]
+    ],
+    [
+     218,
+     218,
+     [
+      "            streaming_block_inputs=args.streaming_block_inputs,\n",
+      "            streaming_batch_size=args.streaming_batch_size,\n",
+      "            data_loader_factory=calibration_data_factory,\n"
+     ]
+    ],
+    [
+     221,
+     222,
+     [
+      [
+       3,
+       247,
+       12
+      ],
+      "            hessian_group=hessian_group,\n"
+     ]
+    ],
+    [
+     259,
+     260,
+     []
+    ]
+   ]
+  },
+  {
+   "target": "experiments/struct_prune_legacy.py",
+   "origin": "struct_prune.py",
+   "target_sha256": "b2218ffc49ac9bd4ed2f28ef5fba0ae0c80ab064835eeb7eac8341f28430757c",
+   "ops": [
+    [
+     0,
+     0,
+     [
+      "\"\"\"Level-database builder in the version with which the Qwen2.5-1.5B database of the paper was built.\n",
+      "\n",
+      "The other databases were built with struct_prune.py. This version differs in three ways: each rank receives a contiguous\n",
+      "block of the calibration sequences (struct_prune.py interleaves them), no random seed is set, and the Hessians are reduced\n",
+      "over the default process group with the pruner in zipprune/legacy/ (struct_pruner.py uses a separate gloo group). Command\n",
+      "used for the paper (four GPUs; the calibration file is written by prepare_qwen15b_calibration.py):\n",
+      "\n",
+      "  torchrun --standalone --nproc-per-node=4 struct_prune_legacy.py --model_name_or_path <Qwen2.5-1.5B> \\\n",
+      "    --prunable_modules '.*layers.*((q|k|v|o|gate|up|down)_proj)$' --pre_block_modules model.embed_tokens model.rotary_emb \\\n",
+      "    --block_modules model.layers --calibration_data <calibration.pt> --calibration_tokens 8388608 \\\n",
+      "    --calibration_sequence_length 8192 --cols_removed_attn 0 128 256 384 512 640 768 896 1024 1152 1280 1408 1536 \\\n",
+      "    --cols_removed_mlp 0 736 1504 2240 2976 3744 4480 5216 5984 6720 7456 8224 8960 --mlp_prune_name down_proj \\\n",
+      "    --attn_prune_name o_proj --low_cpu_mem_usage --cpu_offload_modules --cpu_offload_activations --verbose \\\n",
+      "    --dtype bfloat16 --attn_implementation sdpa --save_dir <work>/db/qwen15b\n",
+      [
+       4,
+       17,
+       0
+      ]
+     ]
+    ],
+    [
+     11,
+     16,
+     [
+      [
+       0,
+       7
+      ],
+      [
+       0,
+       8
+      ],
+      "sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # repository root: evoprune, zipprune\n",
+      "\n",
+      "from evoprune import dist_utils\n",
+      "from evoprune.data_utils import get_data, get_data_chunks\n",
+      "from zipprune.legacy.struct_pruner import ZipLMPruner\n",
+      "from evoprune.struct_cap import SparseStructCAP\n",
+      "from evoprune.common_utils import read_yaml_config\n"
+     ]
+    ],
+    [
+     116,
+     116,
+     [
+      113,
+      "        \"--calibration_chunk_tokens\",\n",
+      [
+       0,
+       180
+      ],
+      [
+       1,
+       210
+      ],
+      "        help=\"If > 0, load calibration data in token chunks and accumulate pruning statistics across chunks.\",\n",
+      115
+     ]
+    ],
+    [
+     145,
+     145,
+     [
+      153,
+      "        \"--streaming_block_inputs\",\n",
+      [
+       0,
+       111
+      ],
+      "        help=\"Recompute block inputs in small chunks instead of caching all calibration activations.\",\n",
+      155,
+      153,
+      "        \"--streaming_batch_size\",\n",
+      [
+       1,
+       270
+      ],
+      [
+       1,
+       210
+      ],
+      "        help=\"Number of calibration samples to stream through prior blocks at a time.\",\n",
+      155
+     ]
+    ],
+    [
+     165,
+     165,
+     [
+      "    local_rank = int(os.environ.get(\"LOCAL_RANK\", \"0\"))\n",
+      "    if torch.cuda.is_available():\n",
+      "        torch.cuda.set_device(local_rank)\n"
+     ]
+    ],
+    [
+     171,
+     172,
+     [
+      "    device = f\"cuda:{local_rank}\"\n"
+     ]
+    ],
+    [
+     192,
+     202,
+     [
+      "    calibration_data_factory = None\n",
+      "\n",
+      "    def _format_chunk(raw_chunk):\n",
+      [
+       2,
+       89
+      ],
+      "            num_seq_per_rank = len(raw_chunk) // world_size\n",
+      "            raw_chunk = raw_chunk[rank * num_seq_per_rank : (rank + 1) * num_seq_per_rank]\n",
+      [
+       3,
+       200,
+       8
+      ],
+      "            return [([], {\"input_ids\": input_ids}, input_ids) for input_ids in raw_chunk]\n",
+      "        return [([], {\"input_ids\": input_ids}) for input_ids in raw_chunk]\n",
+      "\n",
+      "    if args.calibration_chunk_tokens and args.calibration_chunk_tokens > 0:\n",
+      [
+       3,
+       200,
+       8
+      ],
+      "            raise ValueError(\"Chunked calibration loading is not currently supported with --use_cap\")\n",
+      "\n",
+      "        def _calibration_data_factory():\n",
+      "            for raw_chunk in get_data_chunks(\n",
+      [
+       1,
+       333,
+       16
+      ],
+      "                args.calibration_tokens,\n",
+      "                args.calibration_chunk_tokens,\n",
+      "                args.calibration_sequence_length,\n",
+      [
+       1,
+       345
+      ],
+      "                train=True,\n",
+      "                seed=args.seed,\n",
+      [
+       3,
+       22,
+       12
+      ],
+      "                formatted = _format_chunk(raw_chunk)\n",
+      "                print(\"len of chunk data is:\", len(formatted))\n",
+      "                if formatted:\n",
+      "                    yield formatted\n",
+      "\n",
+      "        calibration_data = []\n",
+      "        calibration_data_factory = _calibration_data_factory\n"
+     ]
+    ],
+    [
+     203,
+     205,
+     [
+      [
+       3,
+       192,
+       8
+      ],
+      [
+       3,
+       193,
+       12
+      ],
+      222,
+      [
+       3,
+       196,
+       8
+      ],
+      "        calibration_data = _format_chunk(calibration_data)\n"
+     ]
+    ],
+    [
+     218,
+     218,
+     [
+      "            streaming_block_inputs=args.streaming_block_inputs,\n",
+      "            streaming_batch_size=args.streaming_batch_size,\n",
+      "            data_loader_factory=calibration_data_factory,\n"
+     ]
+    ],
+    [
+     259,
+     260,
+     []
+    ]
+   ]
+  },
+  {
+   "target": "zipprune/struct_pruner.py",
+   "origin": "src/struct_pruner.py",
+   "target_sha256": "a2bd667689c5226f24b7f85d762823235a3df004b6bbe31bffa66dc096c1fa88",
+   "ops": [
+    [
+     1,
+     2,
+     [
+      [
+       1,
+       6
+      ],
+      "from typing import Iterable, Dict, List, Any, Optional, Union, Callable\n"
+     ]
+    ],
+    [
+     8,
+     12,
+     [
+      "from evoprune import dist_utils\n",
+      "from zipprune.fast_obc_struct import FastOBCStruct\n",
+      "from evoprune.common_utils import to, maybe_first_element\n",
+      "from evoprune.model_utils import InputCollector, ForwardInterrupt, LINEAR_LAYERS, select_layers\n"
+     ]
+    ],
+    [
+     30,
+     30,
+     [
+      "        streaming_block_inputs: bool = False,\n",
+      "        streaming_batch_size: int = 1,\n",
+      "        data_loader_factory: Optional[Callable[[], Iterable[List[Any]]]] = None,\n"
+     ]
+    ],
+    [
+     31,
+     32,
+     [
+      "        sparse_config: dict = None,\n",
+      "        hessian_group=None,\n"
+     ]
+    ],
+    [
+     35,
+     35,
+     [
+      "        self.data_loader_factory = data_loader_factory\n"
+     ]
+    ],
+    [
+     43,
+     43,
+     [
+      "        self.streaming_block_inputs = streaming_block_inputs\n",
+      "        self.streaming_batch_size = max(1, int(streaming_batch_size))\n"
+     ]
+    ],
+    [
+     47,
+     47,
+     [
+      "        self.hessian_group = hessian_group\n"
+     ]
+    ],
+    [
+     56,
+     57,
+     [
+      "        headsize = getattr(\n",
+      "            self.model.config,\n",
+      "            \"head_dim\",\n",
+      "            self.model.config.hidden_size // self.model.config.num_attention_heads,\n",
+      [
+       1,
+       348
+      ]
+     ]
+    ],
+    [
+     61,
+     61,
+     [
+      "\n",
+      "        if self.streaming_block_inputs:\n",
+      "            return self._struct_prune_streaming(cols_removed_attention, cols_removed_mlp, headsize)\n",
+      "        if self.data_loader_factory is not None:\n",
+      "            return self._struct_prune_chunked(cols_removed_attention, cols_removed_mlp, headsize)\n"
+     ]
+    ],
+    [
+     85,
+     88,
+     []
+    ],
+    [
+     109,
+     112,
+     []
+    ],
+    [
+     147,
+     149,
+     []
+    ],
+    [
+     174,
+     174,
+     [
+      48,
+      "    def _struct_prune_chunked(self, cols_removed_attention: List[int], cols_removed_mlp: List[int], headsize: int):\n",
+      54,
+      "        Chunked non-streaming variant of struct_prune.\n",
+      "\n",
+      "        For each block, accumulate pruning statistics across all calibration\n",
+      "        chunks first, then prune once for that block.\n",
+      54,
+      62,
+      64,
+      65,
+      "\n",
+      171,
+      71,
+      72,
+      "\n",
+      [
+       5,
+       137
+      ],
+      [
+       6,
+       94,
+       12
+      ],
+      114,
+      "                    dist_utils.print_on_main(\n",
+      "                        f\"Processing {self.block_modules} {block_id}/{len(blocks)} with chunked calibration loading.\"\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       98,
+       16
+      ],
+      [
+       6,
+       100,
+       16
+      ],
+      [
+       6,
+       101,
+       16
+      ],
+      [
+       6,
+       102,
+       16
+      ],
+      "\n",
+      "                for chunk_idx, data_chunk in enumerate(self.data_loader_factory(), start=1):\n",
+      [
+       6,
+       114,
+       20
+      ],
+      "                        dist_utils.print_on_main(\n",
+      "                            f\"Processing calibration chunk {chunk_idx} for block {block_id}\"\n",
+      [
+       1,
+       107,
+       24
+      ],
+      "\n",
+      "                    input_args, input_kwargs = self._collect_first_block_inputs(blocks, pre_blocks, data_chunk, device)\n",
+      "\n",
+      "                    for prev_block_id in range(block_id):\n",
+      "                        prev_block = blocks[prev_block_id].to(device)\n",
+      "                        self._run_block_inplace(prev_block, input_args, input_kwargs, device)\n",
+      [
+       6,
+       164,
+       24
+      ],
+      "                            prev_block.cpu()\n",
+      "\n",
+      [
+       6,
+       151,
+       20
+      ],
+      "                        block(*to(inp_args, device=device), **to(inp_kwargs, device=device))\n",
+      "\n",
+      "                    del input_args\n",
+      "                    del input_kwargs\n",
+      [
+       6,
+       169,
+       20
+      ],
+      "\n",
+      [
+       6,
+       107,
+       16
+      ],
+      [
+       6,
+       108,
+       20
+      ],
+      "\n",
+      [
+       6,
+       113,
+       16
+      ],
+      [
+       6,
+       114,
+       20
+      ],
+      [
+       6,
+       115,
+       24
+      ],
+      "\n",
+      [
+       6,
+       139,
+       20
+      ],
+      [
+       6,
+       122,
+       24
+      ],
+      [
+       6,
+       123,
+       24
+      ],
+      [
+       6,
+       124,
+       24
+      ],
+      "                        cols_removed_attention_to_prune = [\n",
+      "                            cols - attn_removed_cols for cols in cols_removed_attention\n",
+      "                        ][old_level:]\n",
+      "                        cols_removed_mlp_to_prune = [\n",
+      "                            cols - mlp_removed_cols for cols in cols_removed_mlp\n",
+      "                        ][old_level:]\n",
+      [
+       6,
+       161,
+       20
+      ],
+      [
+       6,
+       131,
+       24
+      ],
+      [
+       6,
+       132,
+       24
+      ],
+      "\n",
+      "                    sparse_weights = handle.prune_struct(\n",
+      "                        cols_removed_attention_to_prune,\n",
+      "                        cols_removed_mlp_to_prune,\n",
+      "                        headsize,\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       136,
+       20
+      ],
+      [
+       6,
+       137,
+       24
+      ],
+      [
+       6,
+       139,
+       28
+      ],
+      [
+       6,
+       140,
+       32
+      ],
+      "\n",
+      [
+       6,
+       142,
+       28
+      ],
+      [
+       6,
+       145,
+       28
+      ],
+      "\n",
+      [
+       6,
+       149,
+       20
+      ],
+      "\n",
+      [
+       6,
+       164,
+       16
+      ],
+      "                    block.cpu()\n",
+      "\n",
+      [
+       6,
+       167,
+       16
+      ],
+      [
+       6,
+       168,
+       16
+      ],
+      [
+       6,
+       169,
+       16
+      ],
+      "        finally:\n",
+      [
+       6,
+       171,
+       12
+      ],
+      [
+       6,
+       172,
+       16
+      ],
+      "\n",
+      48,
+      "    def _struct_prune_streaming(self, cols_removed_attention: List[int], cols_removed_mlp: List[int], headsize: int):\n",
+      54,
+      "        Memory-bounded variant of struct_prune.\n",
+      "\n",
+      "        Instead of caching every block input for the full calibration set, this\n",
+      "        recomputes inputs for the current block in small chunks. It is much\n",
+      "        slower, but keeps CPU activation memory bounded by streaming_batch_size.\n",
+      54,
+      62,
+      64,
+      65,
+      "\n",
+      171,
+      71,
+      72,
+      "\n",
+      "        data_loader = list(self.data_loader)\n",
+      [
+       5,
+       137
+      ],
+      [
+       6,
+       94,
+       12
+      ],
+      114,
+      "                    dist_utils.print_on_main(\n",
+      "                        f\"Processing {self.block_modules} {block_id}/{len(blocks)} \"\n",
+      "                        f\"with streaming_batch_size={self.streaming_batch_size}.\"\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       98,
+       16
+      ],
+      [
+       6,
+       100,
+       16
+      ],
+      [
+       6,
+       101,
+       16
+      ],
+      [
+       6,
+       102,
+       16
+      ],
+      "\n",
+      "                if self.data_loader_factory is not None:\n",
+      "                    chunk_iter = self.data_loader_factory()\n",
+      161,
+      "                    chunk_iter = [data_loader]\n",
+      "\n",
+      "                for chunk_idx, data_chunk in enumerate(chunk_iter, start=1):\n",
+      [
+       6,
+       114,
+       20
+      ],
+      "                        dist_utils.print_on_main(\n",
+      "                            f\"Processing calibration chunk {chunk_idx} for block {block_id}\"\n",
+      [
+       1,
+       107,
+       24
+      ],
+      "                    num_batches = (len(data_chunk) + self.streaming_batch_size - 1) // self.streaming_batch_size\n",
+      "                    chunk_start_time = time.perf_counter()\n",
+      "                    for start in range(0, len(data_chunk), self.streaming_batch_size):\n",
+      "                        batch = data_chunk[start : start + self.streaming_batch_size]\n",
+      "                        batch_idx = start // self.streaming_batch_size + 1\n",
+      "                        if self.verbose and (\n",
+      "                            batch_idx == 1\n",
+      "                            or batch_idx == num_batches\n",
+      "                            or batch_idx % 50 == 0\n",
+      [
+       1,
+       30,
+       24
+      ],
+      "                            elapsed = time.perf_counter() - chunk_start_time\n",
+      "                            dist_utils.print_on_main(\n",
+      "                                f\"Block {block_id} chunk {chunk_idx}: \"\n",
+      "                                f\"streaming batch {batch_idx}/{num_batches} \"\n",
+      "                                f\"(samples {start + 1}-{min(start + self.streaming_batch_size, len(data_chunk))} \"\n",
+      "                                f\"of {len(data_chunk)}), elapsed={elapsed:.1f}s\"\n",
+      [
+       1,
+       107,
+       28
+      ],
+      "                        input_args, input_kwargs = self._collect_first_block_inputs(blocks, pre_blocks, batch, device)\n",
+      "\n",
+      "                        for prev_block_id in range(block_id):\n",
+      "                            prev_block = blocks[prev_block_id].to(device)\n",
+      "                            self._run_block_inplace(prev_block, input_args, input_kwargs, device)\n",
+      [
+       6,
+       164,
+       28
+      ],
+      "                                prev_block.cpu()\n",
+      "\n",
+      "                        self._run_block_inplace(block, input_args, input_kwargs, device)\n",
+      "\n",
+      "                        del input_args\n",
+      "                        del input_kwargs\n",
+      [
+       6,
+       169,
+       24
+      ],
+      "\n",
+      [
+       6,
+       107,
+       16
+      ],
+      [
+       6,
+       108,
+       20
+      ],
+      "\n",
+      [
+       6,
+       113,
+       16
+      ],
+      [
+       6,
+       114,
+       20
+      ],
+      [
+       6,
+       115,
+       24
+      ],
+      "\n",
+      [
+       6,
+       139,
+       20
+      ],
+      [
+       6,
+       122,
+       24
+      ],
+      [
+       6,
+       123,
+       24
+      ],
+      [
+       6,
+       124,
+       24
+      ],
+      "                        cols_removed_attention_to_prune = [\n",
+      "                            cols - attn_removed_cols for cols in cols_removed_attention\n",
+      "                        ][old_level:]\n",
+      "                        cols_removed_mlp_to_prune = [\n",
+      "                            cols - mlp_removed_cols for cols in cols_removed_mlp\n",
+      "                        ][old_level:]\n",
+      [
+       6,
+       161,
+       20
+      ],
+      [
+       6,
+       131,
+       24
+      ],
+      [
+       6,
+       132,
+       24
+      ],
+      "\n",
+      "                    sparse_weights = handle.prune_struct(\n",
+      "                        cols_removed_attention_to_prune,\n",
+      "                        cols_removed_mlp_to_prune,\n",
+      "                        headsize,\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       136,
+       20
+      ],
+      [
+       6,
+       137,
+       24
+      ],
+      [
+       6,
+       139,
+       28
+      ],
+      [
+       6,
+       140,
+       32
+      ],
+      "\n",
+      [
+       6,
+       142,
+       28
+      ],
+      [
+       6,
+       145,
+       28
+      ],
+      "\n",
+      [
+       6,
+       149,
+       20
+      ],
+      "\n",
+      [
+       6,
+       164,
+       16
+      ],
+      "                    block.cpu()\n",
+      "\n",
+      [
+       6,
+       167,
+       16
+      ],
+      [
+       6,
+       168,
+       16
+      ],
+      [
+       6,
+       169,
+       16
+      ],
+      "        finally:\n",
+      [
+       6,
+       171,
+       12
+      ],
+      [
+       6,
+       172,
+       16
+      ],
+      "\n",
+      "    def _collect_first_block_inputs(self, blocks, pre_blocks, batch, device):\n",
+      66,
+      67,
+      68,
+      "\n",
+      74,
+      "        for inp_args, inp_kwargs in batch:\n",
+      77,
+      78,
+      79,
+      80,
+      "\n",
+      81,
+      82,
+      83,
+      "\n",
+      89,
+      90,
+      91,
+      "\n",
+      "        return input_args, input_kwargs\n",
+      "\n",
+      "    def _run_block_inplace(self, block, input_args, input_kwargs, device):\n",
+      [
+       6,
+       151,
+       8
+      ],
+      [
+       6,
+       152,
+       12
+      ],
+      [
+       6,
+       153,
+       12
+      ],
+      [
+       6,
+       154,
+       12
+      ],
+      [
+       5,
+       157
+      ],
+      [
+       6,
+       157,
+       12
+      ],
+      [
+       6,
+       158,
+       16
+      ],
+      [
+       6,
+       159,
+       12
+      ],
+      [
+       6,
+       160,
+       16
+      ],
+      [
+       2,
+       121
+      ],
+      [
+       6,
+       162,
+       16
+      ],
+      "\n"
+     ]
+    ],
+    [
+     194,
+     197,
+     [
+      "        return FastOBCStruct(layer, rel_damp=self.rel_damp, hessian_group=self.hessian_group)\n"
+     ]
+    ]
+   ]
+  },
+  {
+   "target": "zipprune/fast_obc_struct.py",
+   "origin": "src/fast_obc_struct.py",
+   "target_sha256": "92ad9a340817dabc5b02399d9b225ed7d7cfd66452ff84e170d8252e1e2f0a25",
+   "ops": [
+    [
+     1,
+     1,
+     [
+      [
+       1,
+       4
+      ]
+     ]
+    ],
+    [
+     8,
+     11,
+     [
+      "from evoprune import dist_utils\n",
+      "from evoprune import linalg_utils\n"
+     ]
+    ],
+    [
+     18,
+     19,
+     [
+      "    def __init__(self, layer: nn.Module, rel_damp: float = 1e-2, verbose: bool = False, hessian_group=None):\n"
+     ]
+    ],
+    [
+     22,
+     23,
+     [
+      "        self.d_row, self.d_col = layer.weight.shape[0], math.prod(layer.weight.shape[1:])\n",
+      "        self.hessian_group = hessian_group\n"
+     ]
+    ],
+    [
+     31,
+     31,
+     [
+      "        self.H_device = self.W_device\n"
+     ]
+    ],
+    [
+     52,
+     53,
+     [
+      "            self.H = torch.zeros((self.d_col, self.d_col), device=self.H_device, dtype=torch.float32)\n"
+     ]
+    ],
+    [
+     67,
+     68,
+     [
+      "        input = input.float().to(self.H_device)\n"
+     ]
+    ],
+    [
+     74,
+     74,
+     [
+      "\n",
+      81,
+      "    def synchronize_hessian(self):\n",
+      "        \"\"\"Recover the full-data Hessian from possibly unequal/empty shards.\n",
+      "\n",
+      "        H on each rank is 2 * X.T @ X / num_samples. Summing H directly is\n",
+      "        wrong for unequal shards; reduce its weighted numerator and count.\n",
+      "        The CLI supplies one shared Gloo group to keep this large collective\n",
+      "        on CPU (avoiding the previously observed NCCL failures).\n",
+      83,
+      "        if not dist_utils.is_dist_available_and_initialized():\n",
+      "            if self.H is None or self.num_samples == 0:\n",
+      "                raise ValueError(\"No calibration samples for Hessian construction\")\n",
+      "            return\n",
+      "        group = self.hessian_group\n",
+      "        device = self.H_device if dist.get_backend(group) == \"nccl\" else torch.device(\"cpu\")\n",
+      "        count = torch.tensor(float(self.num_samples), dtype=torch.float64, device=device)\n",
+      "        dist.all_reduce(count, group=group)\n",
+      "        total = int(count.item())\n",
+      "        if total == 0:\n",
+      "            raise ValueError(\"No calibration samples across any rank\")\n",
+      51,
+      "            self.H = torch.zeros((self.d_col, self.d_col), dtype=torch.float32, device=self.H_device)\n",
+      "        # Transfer bounded row chunks, not another entire Hessian per rank.\n",
+      "        rows = max(1, (8 * 1024 * 1024) // (4 * self.d_col))\n",
+      "        for start in range(0, self.d_col, rows):\n",
+      "            chunk = self.H[start:start + rows].to(device).clone()\n",
+      "            chunk.mul_(self.num_samples)\n",
+      "            dist.all_reduce(chunk, group=group)\n",
+      "            self.H[start:start + rows].copy_((chunk / total).to(self.H.device))\n",
+      "        self.num_samples = total\n"
+     ]
+    ],
+    [
+     87,
+     91,
+     [
+      "        self.synchronize_hessian()\n",
+      "        if not torch.isfinite(self.H).all():\n",
+      "            raise ValueError(\"Nonfinite calibration Hessian\")\n"
+     ]
+    ],
+    [
+     92,
+     94,
+     [
+      "        diag_h = torch.diagonal(self.H)\n",
+      "        pruned_ids = diag_h == 0\n",
+      "        if pruned_ids.any():\n",
+      "            diag_h[pruned_ids] = 1\n"
+     ]
+    ],
+    [
+     95,
+     97,
+     [
+      "        damp = self.rel_damp * diag_h.mean()\n",
+      "        diag_h.add_(damp)\n"
+     ]
+    ],
+    [
+     102,
+     103,
+     [
+      "        self.W.masked_fill_(pruned_ids.to(self.W.device).unsqueeze(0), 0)\n"
+     ]
+    ],
+    [
+     106,
+     108,
+     [
+      "    # ZipLM Algorithm 1: select one structure, compensate, update the inverse.\n"
+     ]
+    ],
+    [
+     109,
+     110,
+     []
+    ],
+    [
+     125,
+     125,
+     [
+      "            if size < 1 or d_col % size or any(p < 0 or p > d_col // size for p in pruned):\n",
+      "                raise ValueError(\"Invalid structured pruning grid\")\n",
+      "\n"
+     ]
+    ],
+    [
+     129,
+     130,
+     []
+    ],
+    [
+     135,
+     136,
+     [
+      "            if pruned and pruned[0] == 0:\n"
+     ]
+    ],
+    [
+     139,
+     140,
+     [
+      "            if pruned and pruned[-1] == d_col // size:\n"
+     ]
+    ],
+    [
+     142,
+     143,
+     [
+      "            if not pruned:\n",
+      [
+       6,
+       80
+      ],
+      "            elif size == 1:\n"
+     ]
+    ],
+    [
+     146,
+     147,
+     [
+      "                    scores = scores.masked_fill(mask, float(\"inf\"))\n"
+     ]
+    ],
+    [
+     149,
+     151,
+     [
+      "                    row = Hinv[j, :].clone()\n",
+      "                    d = diag[j].clone()\n"
+     ]
+    ],
+    [
+     153,
+     155,
+     [
+      "                    W.masked_fill_(mask.unsqueeze(0), 0)\n",
+      "                    while pruned and (dropped + 1 == pruned[0]):\n"
+     ]
+    ],
+    [
+     164,
+     164,
+     [
+      "                    torch.diagonal(Hinv)[mask] = 1\n"
+     ]
+    ],
+    [
+     176,
+     177,
+     [
+      "                    scores = scores.masked_fill(mask, float(\"inf\"))\n"
+     ]
+    ],
+    [
+     179,
+     180,
+     [
+      "                    rows = Hinv[(size * j):(size * (j + 1)), :].clone()\n"
+     ]
+    ],
+    [
+     184,
+     186,
+     [
+      "                    W.masked_fill_(mask1.unsqueeze(0), 0)\n",
+      "                    while pruned and (dropped + 1 == pruned[0]):\n"
+     ]
+    ],
+    [
+     194,
+     195,
+     [
+      "                    torch.diagonal(Hinv)[mask1] = 1\n"
+     ]
+    ],
+    [
+     199,
+     206,
+     [
+      114
+     ]
+    ],
+    [
+     218,
+     219,
+     [
+      "        zero_cols = w.eq(0).all(dim=0)\n"
+     ]
+    ],
+    [
+     221,
+     224,
+     [
+      "        if zero_cols.any():\n",
+      "            zero_ids = torch.where(zero_cols.to(H.device))[0]\n",
+      "            H.index_fill_(0, zero_ids, 0)\n",
+      "            H.index_fill_(1, zero_ids, 0)\n",
+      "            torch.diagonal(H).index_fill_(0, zero_ids, 1)\n"
+     ]
+    ],
+    [
+     226,
+     226,
+     [
+      "        H = H.to(device=w.device, dtype=torch.float32)\n"
+     ]
+    ]
+   ]
+  },
+  {
+   "target": "zipprune/legacy/struct_pruner.py",
+   "origin": "src/struct_pruner.py",
+   "target_sha256": "382780b82bc51e257c98207fefb817e74e83e7db6134dbdd0772f241f3644e2f",
+   "ops": [
+    [
+     1,
+     2,
+     [
+      [
+       1,
+       6
+      ],
+      "from typing import Iterable, Dict, List, Any, Optional, Union, Callable\n"
+     ]
+    ],
+    [
+     8,
+     12,
+     [
+      "from evoprune import dist_utils\n",
+      "from zipprune.legacy.fast_obc_struct import FastOBCStruct\n",
+      "from evoprune.common_utils import to, maybe_first_element\n",
+      "from evoprune.model_utils import InputCollector, ForwardInterrupt, LINEAR_LAYERS, select_layers\n"
+     ]
+    ],
+    [
+     30,
+     30,
+     [
+      "        streaming_block_inputs: bool = False,\n",
+      "        streaming_batch_size: int = 1,\n",
+      "        data_loader_factory: Optional[Callable[[], Iterable[List[Any]]]] = None,\n"
+     ]
+    ],
+    [
+     35,
+     35,
+     [
+      "        self.data_loader_factory = data_loader_factory\n"
+     ]
+    ],
+    [
+     43,
+     43,
+     [
+      "        self.streaming_block_inputs = streaming_block_inputs\n",
+      "        self.streaming_batch_size = max(1, int(streaming_batch_size))\n"
+     ]
+    ],
+    [
+     56,
+     57,
+     [
+      "        headsize = getattr(\n",
+      "            self.model.config,\n",
+      "            \"head_dim\",\n",
+      "            self.model.config.hidden_size // self.model.config.num_attention_heads,\n",
+      [
+       1,
+       348
+      ]
+     ]
+    ],
+    [
+     61,
+     61,
+     [
+      "\n",
+      "        if self.streaming_block_inputs:\n",
+      "            return self._struct_prune_streaming(cols_removed_attention, cols_removed_mlp, headsize)\n",
+      "        if self.data_loader_factory is not None:\n",
+      "            return self._struct_prune_chunked(cols_removed_attention, cols_removed_mlp, headsize)\n"
+     ]
+    ],
+    [
+     85,
+     88,
+     []
+    ],
+    [
+     109,
+     112,
+     []
+    ],
+    [
+     147,
+     149,
+     []
+    ],
+    [
+     174,
+     174,
+     [
+      48,
+      "    def _struct_prune_chunked(self, cols_removed_attention: List[int], cols_removed_mlp: List[int], headsize: int):\n",
+      54,
+      "        Chunked non-streaming variant of struct_prune.\n",
+      "\n",
+      "        For each block, accumulate pruning statistics across all calibration\n",
+      "        chunks first, then prune once for that block.\n",
+      54,
+      62,
+      64,
+      65,
+      "\n",
+      171,
+      71,
+      72,
+      "\n",
+      [
+       5,
+       137
+      ],
+      [
+       6,
+       94,
+       12
+      ],
+      114,
+      "                    dist_utils.print_on_main(\n",
+      "                        f\"Processing {self.block_modules} {block_id}/{len(blocks)} with chunked calibration loading.\"\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       98,
+       16
+      ],
+      [
+       6,
+       100,
+       16
+      ],
+      [
+       6,
+       101,
+       16
+      ],
+      [
+       6,
+       102,
+       16
+      ],
+      "\n",
+      "                for chunk_idx, data_chunk in enumerate(self.data_loader_factory(), start=1):\n",
+      [
+       6,
+       114,
+       20
+      ],
+      "                        dist_utils.print_on_main(\n",
+      "                            f\"Processing calibration chunk {chunk_idx} for block {block_id}\"\n",
+      [
+       1,
+       107,
+       24
+      ],
+      "\n",
+      "                    input_args, input_kwargs = self._collect_first_block_inputs(blocks, pre_blocks, data_chunk, device)\n",
+      "\n",
+      "                    for prev_block_id in range(block_id):\n",
+      "                        prev_block = blocks[prev_block_id].to(device)\n",
+      "                        self._run_block_inplace(prev_block, input_args, input_kwargs, device)\n",
+      [
+       6,
+       164,
+       24
+      ],
+      "                            prev_block.cpu()\n",
+      "\n",
+      [
+       6,
+       151,
+       20
+      ],
+      "                        block(*to(inp_args, device=device), **to(inp_kwargs, device=device))\n",
+      "\n",
+      "                    del input_args\n",
+      "                    del input_kwargs\n",
+      [
+       6,
+       169,
+       20
+      ],
+      "\n",
+      [
+       6,
+       107,
+       16
+      ],
+      [
+       6,
+       108,
+       20
+      ],
+      "\n",
+      [
+       6,
+       113,
+       16
+      ],
+      [
+       6,
+       114,
+       20
+      ],
+      [
+       6,
+       115,
+       24
+      ],
+      "\n",
+      [
+       6,
+       139,
+       20
+      ],
+      [
+       6,
+       122,
+       24
+      ],
+      [
+       6,
+       123,
+       24
+      ],
+      [
+       6,
+       124,
+       24
+      ],
+      "                        cols_removed_attention_to_prune = [\n",
+      "                            cols - attn_removed_cols for cols in cols_removed_attention\n",
+      "                        ][old_level:]\n",
+      "                        cols_removed_mlp_to_prune = [\n",
+      "                            cols - mlp_removed_cols for cols in cols_removed_mlp\n",
+      "                        ][old_level:]\n",
+      [
+       6,
+       161,
+       20
+      ],
+      [
+       6,
+       131,
+       24
+      ],
+      [
+       6,
+       132,
+       24
+      ],
+      "\n",
+      "                    sparse_weights = handle.prune_struct(\n",
+      "                        cols_removed_attention_to_prune,\n",
+      "                        cols_removed_mlp_to_prune,\n",
+      "                        headsize,\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       136,
+       20
+      ],
+      [
+       6,
+       137,
+       24
+      ],
+      [
+       6,
+       139,
+       28
+      ],
+      [
+       6,
+       140,
+       32
+      ],
+      "\n",
+      [
+       6,
+       142,
+       28
+      ],
+      [
+       6,
+       145,
+       28
+      ],
+      "\n",
+      [
+       6,
+       149,
+       20
+      ],
+      "\n",
+      [
+       6,
+       164,
+       16
+      ],
+      "                    block.cpu()\n",
+      "\n",
+      [
+       6,
+       167,
+       16
+      ],
+      [
+       6,
+       168,
+       16
+      ],
+      [
+       6,
+       169,
+       16
+      ],
+      "        finally:\n",
+      [
+       6,
+       171,
+       12
+      ],
+      [
+       6,
+       172,
+       16
+      ],
+      "\n",
+      48,
+      "    def _struct_prune_streaming(self, cols_removed_attention: List[int], cols_removed_mlp: List[int], headsize: int):\n",
+      54,
+      "        Memory-bounded variant of struct_prune.\n",
+      "\n",
+      "        Instead of caching every block input for the full calibration set, this\n",
+      "        recomputes inputs for the current block in small chunks. It is much\n",
+      "        slower, but keeps CPU activation memory bounded by streaming_batch_size.\n",
+      54,
+      62,
+      64,
+      65,
+      "\n",
+      171,
+      71,
+      72,
+      "\n",
+      "        data_loader = list(self.data_loader)\n",
+      [
+       5,
+       137
+      ],
+      [
+       6,
+       94,
+       12
+      ],
+      114,
+      "                    dist_utils.print_on_main(\n",
+      "                        f\"Processing {self.block_modules} {block_id}/{len(blocks)} \"\n",
+      "                        f\"with streaming_batch_size={self.streaming_batch_size}.\"\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       98,
+       16
+      ],
+      [
+       6,
+       100,
+       16
+      ],
+      [
+       6,
+       101,
+       16
+      ],
+      [
+       6,
+       102,
+       16
+      ],
+      "\n",
+      "                if self.data_loader_factory is not None:\n",
+      "                    chunk_iter = self.data_loader_factory()\n",
+      161,
+      "                    chunk_iter = [data_loader]\n",
+      "\n",
+      "                for chunk_idx, data_chunk in enumerate(chunk_iter, start=1):\n",
+      [
+       6,
+       114,
+       20
+      ],
+      "                        dist_utils.print_on_main(\n",
+      "                            f\"Processing calibration chunk {chunk_idx} for block {block_id}\"\n",
+      [
+       1,
+       107,
+       24
+      ],
+      "                    num_batches = (len(data_chunk) + self.streaming_batch_size - 1) // self.streaming_batch_size\n",
+      "                    chunk_start_time = time.perf_counter()\n",
+      "                    for start in range(0, len(data_chunk), self.streaming_batch_size):\n",
+      "                        batch = data_chunk[start : start + self.streaming_batch_size]\n",
+      "                        batch_idx = start // self.streaming_batch_size + 1\n",
+      "                        if self.verbose and (\n",
+      "                            batch_idx == 1\n",
+      "                            or batch_idx == num_batches\n",
+      "                            or batch_idx % 50 == 0\n",
+      [
+       1,
+       30,
+       24
+      ],
+      "                            elapsed = time.perf_counter() - chunk_start_time\n",
+      "                            dist_utils.print_on_main(\n",
+      "                                f\"Block {block_id} chunk {chunk_idx}: \"\n",
+      "                                f\"streaming batch {batch_idx}/{num_batches} \"\n",
+      "                                f\"(samples {start + 1}-{min(start + self.streaming_batch_size, len(data_chunk))} \"\n",
+      "                                f\"of {len(data_chunk)}), elapsed={elapsed:.1f}s\"\n",
+      [
+       1,
+       107,
+       28
+      ],
+      "                        input_args, input_kwargs = self._collect_first_block_inputs(blocks, pre_blocks, batch, device)\n",
+      "\n",
+      "                        for prev_block_id in range(block_id):\n",
+      "                            prev_block = blocks[prev_block_id].to(device)\n",
+      "                            self._run_block_inplace(prev_block, input_args, input_kwargs, device)\n",
+      [
+       6,
+       164,
+       28
+      ],
+      "                                prev_block.cpu()\n",
+      "\n",
+      "                        self._run_block_inplace(block, input_args, input_kwargs, device)\n",
+      "\n",
+      "                        del input_args\n",
+      "                        del input_kwargs\n",
+      [
+       6,
+       169,
+       24
+      ],
+      "\n",
+      [
+       6,
+       107,
+       16
+      ],
+      [
+       6,
+       108,
+       20
+      ],
+      "\n",
+      [
+       6,
+       113,
+       16
+      ],
+      [
+       6,
+       114,
+       20
+      ],
+      [
+       6,
+       115,
+       24
+      ],
+      "\n",
+      [
+       6,
+       139,
+       20
+      ],
+      [
+       6,
+       122,
+       24
+      ],
+      [
+       6,
+       123,
+       24
+      ],
+      [
+       6,
+       124,
+       24
+      ],
+      "                        cols_removed_attention_to_prune = [\n",
+      "                            cols - attn_removed_cols for cols in cols_removed_attention\n",
+      "                        ][old_level:]\n",
+      "                        cols_removed_mlp_to_prune = [\n",
+      "                            cols - mlp_removed_cols for cols in cols_removed_mlp\n",
+      "                        ][old_level:]\n",
+      [
+       6,
+       161,
+       20
+      ],
+      [
+       6,
+       131,
+       24
+      ],
+      [
+       6,
+       132,
+       24
+      ],
+      "\n",
+      "                    sparse_weights = handle.prune_struct(\n",
+      "                        cols_removed_attention_to_prune,\n",
+      "                        cols_removed_mlp_to_prune,\n",
+      "                        headsize,\n",
+      [
+       1,
+       107
+      ],
+      "\n",
+      [
+       6,
+       136,
+       20
+      ],
+      [
+       6,
+       137,
+       24
+      ],
+      [
+       6,
+       139,
+       28
+      ],
+      [
+       6,
+       140,
+       32
+      ],
+      "\n",
+      [
+       6,
+       142,
+       28
+      ],
+      [
+       6,
+       145,
+       28
+      ],
+      "\n",
+      [
+       6,
+       149,
+       20
+      ],
+      "\n",
+      [
+       6,
+       164,
+       16
+      ],
+      "                    block.cpu()\n",
+      "\n",
+      [
+       6,
+       167,
+       16
+      ],
+      [
+       6,
+       168,
+       16
+      ],
+      [
+       6,
+       169,
+       16
+      ],
+      "        finally:\n",
+      [
+       6,
+       171,
+       12
+      ],
+      [
+       6,
+       172,
+       16
+      ],
+      "\n",
+      "    def _collect_first_block_inputs(self, blocks, pre_blocks, batch, device):\n",
+      66,
+      67,
+      68,
+      "\n",
+      74,
+      "        for inp_args, inp_kwargs in batch:\n",
+      77,
+      78,
+      79,
+      80,
+      "\n",
+      81,
+      82,
+      83,
+      "\n",
+      89,
+      90,
+      91,
+      "\n",
+      "        return input_args, input_kwargs\n",
+      "\n",
+      "    def _run_block_inplace(self, block, input_args, input_kwargs, device):\n",
+      [
+       6,
+       151,
+       8
+      ],
+      [
+       6,
+       152,
+       12
+      ],
+      [
+       6,
+       153,
+       12
+      ],
+      [
+       6,
+       154,
+       12
+      ],
+      [
+       5,
+       157
+      ],
+      [
+       6,
+       157,
+       12
+      ],
+      [
+       6,
+       158,
+       16
+      ],
+      [
+       6,
+       159,
+       12
+      ],
+      [
+       6,
+       160,
+       16
+      ],
+      [
+       2,
+       121
+      ],
+      [
+       6,
+       162,
+       16
+      ],
+      "\n"
+     ]
+    ],
+    [
+     195,
+     197,
+     []
+    ]
+   ]
+  },
+  {
+   "target": "zipprune/legacy/fast_obc_struct.py",
+   "origin": "src/fast_obc_struct.py",
+   "target_sha256": "cba185fb00342ac6ca170901957e1fbb689bec9a96759e78a92ec03fb60ca119",
+   "ops": [
+    [
+     8,
+     11,
+     [
+      "from evoprune import dist_utils\n",
+      "from evoprune import model_utils\n",
+      "from evoprune import linalg_utils\n"
+     ]
+    ],
+    [
+     31,
+     31,
+     [
+      "        self.H_device = self.W_device\n"
+     ]
+    ],
+    [
+     52,
+     53,
+     [
+      "            self.H = torch.zeros((self.d_col, self.d_col), device=self.H_device, dtype=torch.float32)\n"
+     ]
+    ],
+    [
+     67,
+     68,
+     [
+      "        input = input.float().to(self.H_device)\n"
+     ]
+    ],
+    [
+     88,
+     91,
+     [
+      "        # NOTE: avoid NCCL all_reduce on Hessian due to CUDA illegal memory access\n",
+      "        # observed in distributed runs on this stack.\n"
+     ]
+    ],
+    [
+     92,
+     94,
+     [
+      "        diag_h = torch.diagonal(self.H)\n",
+      "        pruned_ids = diag_h == 0\n",
+      "        if pruned_ids.any():\n",
+      "            diag_h[pruned_ids] = 1\n"
+     ]
+    ],
+    [
+     95,
+     97,
+     [
+      "        damp = self.rel_damp * diag_h.mean()\n",
+      "        diag_h.add_(damp)\n"
+     ]
+    ],
+    [
+     102,
+     103,
+     [
+      "        self.W.masked_fill_(pruned_ids.to(self.W.device).unsqueeze(0), 0)\n"
+     ]
+    ],
+    [
+     129,
+     130,
+     []
+    ],
+    [
+     135,
+     136,
+     [
+      "            if pruned and pruned[0] == 0:\n"
+     ]
+    ],
+    [
+     139,
+     140,
+     [
+      "            if pruned and pruned[-1] == d_col // size:\n"
+     ]
+    ],
+    [
+     146,
+     147,
+     [
+      "                    scores = scores.masked_fill(mask, float(\"inf\"))\n"
+     ]
+    ],
+    [
+     153,
+     155,
+     [
+      "                    W.masked_fill_(mask.unsqueeze(0), 0)\n",
+      "                    while pruned and (dropped + 1 == pruned[0]):\n"
+     ]
+    ],
+    [
+     176,
+     177,
+     [
+      "                    scores = scores.masked_fill(mask, float(\"inf\"))\n"
+     ]
+    ],
+    [
+     184,
+     186,
+     [
+      "                    W.masked_fill_(mask1.unsqueeze(0), 0)\n",
+      "                    while pruned and (dropped + 1 == pruned[0]):\n"
+     ]
+    ],
+    [
+     194,
+     195,
+     [
+      "                    torch.diagonal(Hinv)[mask1] = 1\n"
+     ]
+    ],
+    [
+     199,
+     206,
+     [
+      114
+     ]
+    ],
+    [
+     218,
+     219,
+     [
+      "        zero_cols = w.eq(0).all(dim=0)\n"
+     ]
+    ],
+    [
+     221,
+     224,
+     [
+      "        if zero_cols.any():\n",
+      "            zero_ids = torch.where(zero_cols.to(H.device))[0]\n",
+      "            H.index_fill_(0, zero_ids, 0)\n",
+      "            H.index_fill_(1, zero_ids, 0)\n",
+      "            torch.diagonal(H).index_fill_(0, zero_ids, 1)\n"
+     ]
+    ],
+    [
+     226,
+     226,
+     [
+      "        H = H.to(device=w.device, dtype=torch.float32)\n"
+     ]
+    ]
+   ]
+  },
+  {
+   "target": "evoprune/struct_cap.py",
+   "origin": "src/struct_cap.py",
+   "target_sha256": "bd16aed1e1684a0a6c4a559d6eefd7af267059ddceaaf1b23b072681806e4b52",
+   "ops": [
+    [
+     13,
+     15,
+     [
+      "from evoprune import dist_utils, model_utils, linalg_utils\n",
+      "from evoprune.common_utils import to\n"
+     ]
+    ]
+   ]
+  },
+  {
+   "target": "evoprune/MoE/struct_pruner.py",
+   "origin": "src/struct_pruner.py",
+   "target_sha256": "e3e572c1b6d96886f038703836053e4aef4e234812f12baeb5c25b1bd4cf4b83",
+   "ops": [
+    [
+     0,
+     0,
+     [
+      "#!/usr/bin/env python3\n",
+      "# -*- coding: utf-8 -*-\n",
+      "\n"
+     ]
+    ],
+    [
+     1,
+     2,
+     [
+      "from typing import Callable, Dict, Iterable, List, Optional, Union\n"
+     ]
+    ],
+    [
+     5,
+     6,
+     []
+    ],
+    [
+     8,
+     12,
+     [
+      "from evoprune import dist_utils\n",
+      "from evoprune.common_utils import maybe_first_element, to\n",
+      "from evoprune.model_utils import ForwardInterrupt, InputCollector\n",
+      "\n",
+      "from .fast_obc_struct import MoEFastOBCStruct\n",
+      "from .model_utils import (\n",
+      "    DEFAULT_EXPERT_DOWN_PROJ_REGEX,\n",
+      "    discover_expert_down_proj_modules,\n",
+      [
+       1,
+       107,
+       0
+      ]
+     ]
+    ],
+    [
+     14,
+     15,
+     [
+      "class MoEExpertPruner:\n",
+      [
+       4,
+       17
+      ],
+      "    OLMoE expert-only DB generator.\n",
+      "\n",
+      "    This pruner only collects statistics for expert `down_proj` modules and\n",
+      "    produces 11-level (or user-specified) sparse slices for each expert.\n",
+      [
+       4,
+       17
+      ]
+     ]
+    ],
+    [
+     20,
+     21,
+     []
+    ],
+    [
+     24,
+     27,
+     [
+      "        cols_removed_mlp: List[int],\n",
+      "        rel_damp: float = 1e-2,\n"
+     ]
+    ],
+    [
+     30,
+     30,
+     [
+      "        data_loader_factory: Optional[Callable[[], Iterable[List]]] = None,\n"
+     ]
+    ],
+    [
+     31,
+     32,
+     [
+      "        expert_down_proj_regex: str = DEFAULT_EXPERT_DOWN_PROJ_REGEX,\n",
+      "        sparse_config: Optional[Dict[str, int]] = None,\n"
+     ]
+    ],
+    [
+     35,
+     36,
+     [
+      "        self.data_loader_factory = data_loader_factory\n"
+     ]
+    ],
+    [
+     38,
+     39,
+     [
+      "        self.save_dir = str(save_dir)\n",
+      "        self.cols_removed_mlp = [int(x) for x in cols_removed_mlp]\n"
+     ]
+    ],
+    [
+     44,
+     47,
+     [
+      "        self.expert_down_proj_regex = expert_down_proj_regex\n",
+      "        self.sparse_config = sparse_config or {}\n"
+     ]
+    ],
+    [
+     49,
+     61,
+     [
+      "    def struct_prune(self) -> None:\n",
+      "        if self.data_loader_factory is not None:\n",
+      "            return self._struct_prune_chunked()\n"
+     ]
+    ],
+    [
+     63,
+     64,
+     []
+    ],
+    [
+     69,
+     70,
+     [
+      "\n"
+     ]
+    ],
+    [
+     73,
+     74,
+     [
+      [
+       1,
+       110
+      ],
+      "            use_cache = None\n",
+      "\n",
+      [
+       5,
+       137
+      ],
+      [
+       6,
+       74,
+       12
+      ],
+      [
+       6,
+       76,
+       12
+      ],
+      [
+       6,
+       77,
+       16
+      ],
+      [
+       6,
+       78,
+       20
+      ],
+      [
+       6,
+       79,
+       16
+      ],
+      [
+       6,
+       80,
+       20
+      ],
+      [
+       6,
+       81,
+       12
+      ],
+      [
+       6,
+       82,
+       12
+      ],
+      [
+       6,
+       83,
+       12
+      ],
+      "\n",
+      164,
+      [
+       6,
+       90,
+       16
+      ],
+      [
+       6,
+       91,
+       20
+      ],
+      "\n",
+      [
+       6,
+       94,
+       12
+      ],
+      114,
+      "                    dist_utils.print_on_main(f\"[MoE][pruner] processing block {block_id}/{len(blocks)}\")\n",
+      [
+       6,
+       98,
+       16
+      ],
+      "                handles, hooks = self._prepare_hooks_and_handles(block_id)\n",
+      [
+       6,
+       104,
+       16
+      ],
+      "                    block(*to(inp_args, device=device), **to(inp_kwargs, device=device))\n",
+      "                for hook in hooks.values():\n",
+      [
+       7,
+       324,
+       20
+      ],
+      "                self._prune_handles(handles)\n",
+      [
+       6,
+       104,
+       16
+      ],
+      [
+       6,
+       105,
+       20
+      ],
+      [
+       6,
+       153,
+       20
+      ],
+      [
+       6,
+       154,
+       20
+      ],
+      [
+       6,
+       155,
+       24
+      ],
+      [
+       6,
+       157,
+       20
+      ],
+      [
+       6,
+       158,
+       24
+      ],
+      [
+       6,
+       159,
+       20
+      ],
+      [
+       6,
+       160,
+       24
+      ],
+      [
+       6,
+       130,
+       20
+      ],
+      "                        raise ValueError(\"Unsupported block input format\")\n",
+      [
+       6,
+       89,
+       16
+      ],
+      "                    block.cpu()\n",
+      [
+       6,
+       167,
+       16
+      ],
+      [
+       6,
+       168,
+       16
+      ],
+      [
+       6,
+       169,
+       16
+      ],
+      "        finally:\n",
+      "            if use_cache is not None:\n",
+      [
+       6,
+       172,
+       16
+      ],
+      "\n",
+      48,
+      "    def _struct_prune_chunked(self) -> None:\n",
+      62,
+      64,
+      65,
+      171,
+      71,
+      72,
+      [
+       1,
+       110
+      ],
+      "            use_cache = None\n",
+      [
+       5,
+       137
+      ],
+      [
+       6,
+       94,
+       12
+      ],
+      114,
+      "                    dist_utils.print_on_main(f\"[MoE][pruner] processing block {block_id}/{len(blocks)} chunked\")\n",
+      [
+       6,
+       98,
+       16
+      ],
+      "                handles, hooks = self._prepare_hooks_and_handles(block_id)\n",
+      "                for chunk_idx, data_chunk in enumerate(self.data_loader_factory(), start=1):\n",
+      [
+       6,
+       114,
+       20
+      ],
+      "                        dist_utils.print_on_main(f\"[MoE][pruner] block {block_id} chunk {chunk_idx}\")\n",
+      "                    input_args, input_kwargs = self._collect_first_block_inputs(blocks, pre_blocks, data_chunk, device)\n",
+      "                    for prev_block_id in range(block_id):\n",
+      "                        prev_block = blocks[prev_block_id].to(device)\n",
+      "                        self._run_block_inplace(prev_block, input_args, input_kwargs, device)\n",
+      [
+       6,
+       164,
+       24
+      ],
+      "                            prev_block.cpu()\n",
+      [
+       6,
+       151,
+       20
+      ],
+      "                        block(*to(inp_args, device=device), **to(inp_kwargs, device=device))\n",
+      "                    del input_args\n",
+      "                    del input_kwargs\n",
+      [
+       6,
+       169,
+       20
+      ],
+      "                for hook in hooks.values():\n",
+      [
+       7,
+       324,
+       20
+      ],
+      "                self._prune_handles(handles)\n",
+      [
+       6,
+       164,
+       16
+      ],
+      "                    block.cpu()\n",
+      [
+       6,
+       167,
+       16
+      ],
+      [
+       6,
+       168,
+       16
+      ],
+      [
+       6,
+       169,
+       16
+      ],
+      "        finally:\n",
+      "            if use_cache is not None:\n",
+      [
+       6,
+       172,
+       16
+      ],
+      "\n",
+      "    def _collect_first_block_inputs(self, blocks, pre_blocks, batch, device):\n",
+      66,
+      67,
+      68
+     ]
+    ],
+    [
+     75,
+     77,
+     [
+      "        for inp_args, inp_kwargs in batch:\n"
+     ]
+    ],
+    [
+     84,
+     89,
+     []
+    ],
+    [
+     92,
+     92,
+     [
+      "        return input_args, input_kwargs\n"
+     ]
+    ],
+    [
+     93,
+     96,
+     [
+      "    def _run_block_inplace(self, block, input_args, input_kwargs, device):\n",
+      [
+       6,
+       104,
+       8
+      ],
+      [
+       6,
+       105,
+       12
+      ],
+      [
+       6,
+       153,
+       12
+      ],
+      [
+       6,
+       154,
+       12
+      ],
+      [
+       5,
+       157
+      ],
+      [
+       6,
+       157,
+       12
+      ],
+      [
+       6,
+       158,
+       16
+      ],
+      [
+       6,
+       159,
+       12
+      ],
+      [
+       6,
+       160,
+       16
+      ],
+      [
+       2,
+       121
+      ],
+      "                raise ValueError(\"Unsupported block input format\")\n",
+      "\n",
+      "    def _prepare_hooks_and_handles(self, block_id: int):\n",
+      "        block_prefix = f\"{self.block_modules}.{block_id}.\"\n",
+      "        all_experts = discover_expert_down_proj_modules(\n",
+      "            self.model,\n",
+      "            expert_down_proj_regex=self.expert_down_proj_regex,\n",
+      [
+       1,
+       348
+      ],
+      "        layers = {name: module for name, module in all_experts.items() if name.startswith(block_prefix)}\n",
+      "        handles: Dict[str, MoEFastOBCStruct] = {}\n",
+      179,
+      180,
+      "            handles[layer_name] = MoEFastOBCStruct(layer, rel_damp=self.rel_damp, verbose=self.verbose)\n",
+      "\n",
+      [
+       6,
+       182,
+       12
+      ],
+      [
+       6,
+       183,
+       16
+      ],
+      [
+       6,
+       184,
+       20
+      ],
+      [
+       6,
+       186,
+       16
+      ],
+      "\n",
+      [
+       6,
+       190,
+       12
+      ],
+      191,
+      "\n",
+      "    def _prune_handles(self, handles: Dict[str, MoEFastOBCStruct]) -> None:\n",
+      [
+       6,
+       113,
+       8
+      ]
+     ]
+    ],
+    [
+     97,
+     173,
+     [
+      "                dist_utils.print_on_main(f\"[MoE][pruner] pruning {handle_name}\")\n",
+      "            if handle_name in self.sparse_config:\n",
+      [
+       6,
+       122,
+       16
+      ],
+      "                old_removed = self.cols_removed_mlp[old_level]\n",
+      "                cols_removed_to_prune = [cols - old_removed for cols in self.cols_removed_mlp][old_level:]\n",
+      [
+       2,
+       121
+      ],
+      "                old_level = 0\n",
+      "                cols_removed_to_prune = self.cols_removed_mlp\n",
+      "            sparse_weights = handle.prune_struct(cols_removed_to_prune)\n",
+      [
+       6,
+       136,
+       12
+      ],
+      [
+       6,
+       142,
+       16
+      ],
+      [
+       6,
+       137,
+       16
+      ],
+      "                    level = level + old_level\n",
+      [
+       6,
+       145,
+       20
+      ],
+      [
+       6,
+       149,
+       12
+      ]
+     ]
+    ],
+    [
+     176,
+     197,
+     []
+    ]
+   ]
+  },
+  {
+   "target": "evoprune/MoE/fast_obc_struct.py",
+   "origin": "src/fast_obc_struct.py",
+   "target_sha256": "e1927a8a3beec7d01b8d7a1307e9a200d249530cfe3afd4d70eb4ac99041c437",
+   "ops": [
+    [
+     0,
+     0,
+     [
+      "#!/usr/bin/env python3\n",
+      "# -*- coding: utf-8 -*-\n",
+      "\n"
+     ]
+    ],
+    [
+     4,
+     5,
+     []
+    ],
+    [
+     6,
+     7,
+     []
+    ],
+    [
+     8,
+     11,
+     [
+      "from evoprune import linalg_utils\n",
+      "from evoprune import model_utils as base_model_utils\n",
+      "from evoprune import dist_utils\n",
+      "\n"
+     ]
+    ],
+    [
+     16,
+     17,
+     [
+      "class MoEFastOBCStruct:\n",
+      [
+       4,
+       17
+      ],
+      "    Expert-MLP-only variant of FastOBCStruct.\n",
+      "\n",
+      "    This handle only supports nn.Linear expert down_proj weights and produces\n",
+      "    a list of full-shape sparse slices for requested removed-column counts.\n",
+      [
+       4,
+       17
+      ]
+     ]
+    ],
+    [
+     19,
+     20,
+     [
+      "        if not isinstance(layer, nn.Linear):\n",
+      "            raise TypeError(f\"MoEFastOBCStruct only supports nn.Linear, got {type(layer)}\")\n"
+     ]
+    ],
+    [
+     22,
+     24,
+     [
+      "        self.d_row, self.d_col = base_model_utils.get_number_of_rows_and_cols(layer)\n"
+     ]
+    ],
+    [
+     25,
+     26,
+     [
+      33
+     ]
+    ],
+    [
+     28,
+     30,
+     []
+    ],
+    [
+     31,
+     31,
+     [
+      "        self.H_device = self.W_device\n"
+     ]
+    ],
+    [
+     32,
+     34,
+     []
+    ],
+    [
+     35,
+     40,
+     []
+    ],
+    [
+     42,
+     51,
+     []
+    ],
+    [
+     52,
+     69,
+     [
+      "            self.H = torch.zeros((self.d_col, self.d_col), device=self.H_device, dtype=torch.float32)\n",
+      "        input = input.reshape(-1, input.shape[-1]).float().to(self.H_device)\n",
+      "        batch_size = int(input.shape[0])\n",
+      "        if batch_size == 0:\n",
+      "            # In MoE models an expert can receive zero routed tokens for a\n",
+      "            # calibration batch. In that case this update contributes no\n",
+      "            # statistics and should simply be skipped.\n",
+      "            return\n"
+     ]
+    ],
+    [
+     72,
+     73,
+     []
+    ],
+    [
+     83,
+     99,
+     [
+      51,
+      "            raise RuntimeError(\"Need at least one calibration batch before pruning\")\n",
+      "        diag_h = torch.diagonal(self.H)\n",
+      "        pruned_ids = diag_h == 0\n",
+      "        if pruned_ids.any():\n",
+      "            diag_h[pruned_ids] = 1\n",
+      "        damp = self.rel_damp * diag_h.mean()\n",
+      "        diag_h.add_(damp)\n"
+     ]
+    ],
+    [
+     100,
+     213,
+     [
+      "        self.W.masked_fill_(pruned_ids.to(self.W.device).unsqueeze(0), 0)\n"
+     ]
+    ],
+    [
+     217,
+     219,
+     [
+      "        zero_cols = w.eq(0).all(dim=0)\n"
+     ]
+    ],
+    [
+     220,
+     225,
+     [
+      "        if zero_cols.any():\n",
+      "            zero_ids = torch.where(zero_cols.to(H.device))[0]\n",
+      "            H.index_fill_(0, zero_ids, 0)\n",
+      "            H.index_fill_(1, zero_ids, 0)\n",
+      "            torch.diagonal(H).index_fill_(0, zero_ids, 1)\n"
+     ]
+    ],
+    [
+     226,
+     228,
+     [
+      "        H = H.to(device=w.device, dtype=torch.float32)\n",
+      "        return w, H\n",
+      "\n",
+      "    def _step(self, cols_removed_mlp: List[int]) -> List[Tensor]:\n",
+      110,
+      [
+       8,
+       196
+      ],
+      [
+       8,
+       126
+      ],
+      [
+       2,
+       212,
+       12
+      ],
+      "\n",
+      [
+       2,
+       116,
+       8
+      ],
+      "        pruned = sorted(set(int(x) for x in cols_removed_mlp))\n",
+      "        losses = torch.zeros(d_col + 1, device=device, dtype=torch.float32)\n",
+      "        mask = torch.zeros(d_col, device=device, dtype=torch.bool)\n",
+      "\n",
+      "        if pruned and pruned[0] == 0:\n",
+      [
+       2,
+       136,
+       12
+      ],
+      [
+       2,
+       137,
+       12
+      ],
+      "        add_zero = False\n",
+      "        if pruned and pruned[-1] == d_col:\n",
+      "            add_zero = True\n",
+      [
+       2,
+       141,
+       12
+      ],
+      "\n",
+      "        for dropped in range(d_col + 1):\n",
+      [
+       2,
+       144,
+       12
+      ],
+      [
+       2,
+       145,
+       12
+      ],
+      "            scores = scores.masked_fill(mask, float(\"inf\"))\n",
+      [
+       2,
+       177,
+       12
+      ],
+      "            losses[dropped] = scores[j]\n",
+      [
+       2,
+       149,
+       12
+      ],
+      [
+       2,
+       150,
+       12
+      ],
+      [
+       2,
+       151,
+       12
+      ],
+      [
+       2,
+       182,
+       12
+      ],
+      "            W.masked_fill_(mask.unsqueeze(0), 0)\n",
+      "            while pruned and (dropped + 1 == pruned[0]):\n",
+      [
+       2,
+       186,
+       16
+      ],
+      [
+       6,
+       114
+      ],
+      "                    print(f\"{pruned[0]:4d} error\", torch.sum(losses).item() / 2)\n",
+      [
+       2,
+       188,
+       16
+      ],
+      "            if not pruned:\n",
+      [
+       8,
+       376
+      ],
+      [
+       2,
+       162,
+       12
+      ],
+      [
+       2,
+       163,
+       12
+      ],
+      "\n",
+      "        if add_zero:\n",
+      [
+       2,
+       196,
+       12
+      ],
+      212,
+      "\n",
+      "    def prune_struct(self, cols_removed_mlp: List[int]) -> List[Tensor]:\n",
+      210,
+      "        return self._step(cols_removed_mlp)\n"
+     ]
+    ]
+   ]
+  },
+  {
+   "target": "evoprune/MoE/cli_build_db.py",
+   "origin": "struct_prune.py",
+   "target_sha256": "b633f318fe81a4b906e24ccb2751c43c5f428912f41ce51c550dc2741824038c",
+   "ops": [
+    [
+     0,
+     0,
+     [
+      "#!/usr/bin/env python3\n",
+      "# -*- coding: utf-8 -*-\n",
+      "\n",
+      1
+     ]
+    ],
+    [
+     1,
+     3,
+     []
+    ],
+    [
+     5,
+     6,
+     []
+    ],
+    [
+     8,
+     10,
+     []
+    ],
+    [
+     11,
+     16,
+     [
+      "from evoprune import dist_utils\n",
+      "from evoprune.data_utils import get_data, get_data_chunks\n"
+     ]
+    ],
+    [
+     17,
+     46,
+     [
+      "from .model_utils import DEFAULT_EXPERT_DOWN_PROJ_REGEX, infer_default_cols_removed_mlp\n",
+      "from .struct_pruner import MoEExpertPruner\n"
+     ]
+    ],
+    [
+     47,
+     54,
+     [
+      "\n",
+      "def load_tokenizer_with_fallback(name_or_path: str):\n",
+      "    errors = []\n",
+      "    attempts = [\n",
+      "        {\"use_fast\": False, \"trust_remote_code\": False},\n",
+      "        {\"use_fast\": True, \"trust_remote_code\": False},\n",
+      "        {\"use_fast\": False, \"trust_remote_code\": True},\n",
+      "        {\"use_fast\": True, \"trust_remote_code\": True},\n",
+      [
+       9,
+       15,
+       4
+      ],
+      "    for kwargs in attempts:\n",
+      [
+       5,
+       137
+      ],
+      "            return AutoTokenizer.from_pretrained(name_or_path, **kwargs)\n",
+      "        except Exception as exc:\n",
+      "            errors.append(f\"{kwargs}: {exc}\")\n",
+      "    raise RuntimeError(\n",
+      "        \"Failed to load tokenizer with all fallback strategies for \"\n",
+      "        f\"{name_or_path}. Errors:\\n\" + \"\\n\".join(errors)\n",
+      63,
+      "\n"
+     ]
+    ],
+    [
+     56,
+     117,
+     [
+      "    parser = argparse.ArgumentParser(description=\"Build an OLMoE expert-only sparse slice DB.\")\n",
+      "    parser.add_argument(\"--model_name_or_path\", type=str, required=True)\n",
+      "    parser.add_argument(\"--tokenizer_name\", type=str, default=None)\n",
+      "    parser.add_argument(\"--pre_block_modules\", nargs=\"+\", type=str, required=True)\n",
+      "    parser.add_argument(\"--block_modules\", type=str, required=True)\n",
+      "    parser.add_argument(\"--calibration_data\", type=str, required=True)\n",
+      "    parser.add_argument(\"--calibration_tokens\", default=int(2**23), type=int)\n",
+      "    parser.add_argument(\"--calibration_sequence_length\", default=None, type=int)\n",
+      "    parser.add_argument(\"--calibration_chunk_tokens\", default=0, type=int)\n"
+     ]
+    ],
+    [
+     118,
+     119,
+     [
+      "    parser.add_argument(\"--num_levels\", type=int, default=11)\n"
+     ]
+    ],
+    [
+     120,
+     161,
+     [
+      "    parser.add_argument(\"--save_dir\", type=str, required=True)\n",
+      "    parser.add_argument(\"--dtype\", type=str, default=\"auto\", choices=[\"auto\", \"float16\", \"float32\", \"bfloat16\"])\n",
+      "    parser.add_argument(\"--seed\", type=int, default=0)\n",
+      "    parser.add_argument(\"--low_cpu_mem_usage\", action=\"store_true\")\n",
+      "    parser.add_argument(\"--attn_implementation\", type=str, default=None, choices=[\"eager\", \"sdpa\", \"flash_attention_2\"])\n",
+      "    parser.add_argument(\"--cpu_offload_modules\", action=\"store_true\")\n",
+      "    parser.add_argument(\"--cpu_offload_activations\", action=\"store_true\")\n",
+      "    parser.add_argument(\"--expert_down_proj_regex\", type=str, default=DEFAULT_EXPERT_DOWN_PROJ_REGEX)\n",
+      "    parser.add_argument(\"--verbose\", action=\"store_true\")\n",
+      [
+       0,
+       186
+      ]
+     ]
+    ],
+    [
+     165,
+     168,
+     [
+      "    local_rank = int(os.environ.get(\"LOCAL_RANK\", \"0\"))\n",
+      "    world_size_env = int(os.environ.get(\"WORLD_SIZE\", \"1\"))\n",
+      "    if torch.cuda.is_available():\n",
+      "        torch.cuda.set_device(local_rank)\n",
+      "    if dist.is_available() and world_size_env > 1 and not dist.is_initialized():\n",
+      "        dist.init_process_group(backend=\"nccl\", init_method=\"env://\")\n"
+     ]
+    ],
+    [
+     170,
+     175,
+     [
+      "    device = f\"cuda:{local_rank}\" if torch.cuda.is_available() else \"cpu\"\n",
+      "    dtype = args.dtype if args.dtype == \"auto\" else getattr(torch, args.dtype)\n",
+      "\n"
+     ]
+    ],
+    [
+     178,
+     179,
+     [
+      "        torch_dtype=dtype,\n"
+     ]
+    ],
+    [
+     182,
+     184,
+     []
+    ],
+    [
+     186,
+     189,
+     [
+      "    tokenizer = load_tokenizer_with_fallback(args.tokenizer_name or args.model_name_or_path)\n"
+     ]
+    ],
+    [
+     190,
+     191,
+     [
+      "        model.config.max_position_embeddings,\n",
+      "        8192,\n"
+     ]
+    ],
+    [
+     192,
+     194,
+     [
+      "\n",
+      "    def _format_chunk(raw_chunk):\n",
+      [
+       2,
+       89
+      ],
+      "            num_seq_per_rank = len(raw_chunk) // world_size\n",
+      "            raw_chunk = raw_chunk[rank * num_seq_per_rank : (rank + 1) * num_seq_per_rank]\n",
+      "        return [([], {\"input_ids\": input_ids}) for input_ids in raw_chunk]\n",
+      "\n",
+      "    calibration_data_factory = None\n",
+      "    if args.calibration_chunk_tokens and args.calibration_chunk_tokens > 0:\n",
+      "        def _factory():\n",
+      "            for raw_chunk in get_data_chunks(\n",
+      [
+       1,
+       333,
+       16
+      ],
+      "                args.calibration_tokens,\n",
+      "                args.calibration_chunk_tokens,\n",
+      "                args.calibration_sequence_length,\n",
+      [
+       1,
+       345
+      ],
+      "                train=True,\n",
+      "                seed=args.seed,\n",
+      [
+       3,
+       22,
+       12
+      ],
+      "                formatted = _format_chunk(raw_chunk)\n",
+      "                if formatted:\n",
+      "                    yield formatted\n",
+      "        calibration_data = []\n",
+      "        calibration_data_factory = _factory\n",
+      223,
+      [
+       3,
+       192,
+       8
+      ],
+      [
+       1,
+       333,
+       12
+      ],
+      "            args.calibration_tokens,\n",
+      "            args.calibration_sequence_length,\n",
+      [
+       1,
+       345,
+       12
+      ],
+      "            train=True,\n",
+      "            seed=args.seed,\n",
+      222,
+      "        calibration_data = _format_chunk(calibration_data)\n",
+      "\n",
+      "    intermediate_size = int(getattr(model.config, \"intermediate_size\"))\n",
+      "    cols_removed_mlp = args.cols_removed_mlp or infer_default_cols_removed_mlp(\n",
+      "        intermediate_size=intermediate_size,\n",
+      "        num_levels=args.num_levels,\n"
+     ]
+    ],
+    [
+     195,
+     232,
+     [
+      "    if cols_removed_mlp[0] != 0:\n",
+      "        raise ValueError(\"cols_removed_mlp must start from 0\")\n"
+     ]
+    ],
+    [
+     233,
+     261,
+     [
+      [
+       3,
+       254,
+       4
+      ],
+      [
+       3,
+       255,
+       4
+      ],
+      "        {\n",
+      "            \"cols_removed_mlp\": cols_removed_mlp,\n",
+      "            \"num_levels\": len(cols_removed_mlp),\n",
+      "            \"model_name_or_path\": args.model_name_or_path,\n",
+      "            \"expert_down_proj_regex\": args.expert_down_proj_regex,\n",
+      "        },\n",
+      [
+       3,
+       257,
+       8
+      ],
+      194
+     ]
+    ],
+    [
+     262,
+     266,
+     [
+      "    pruner = MoEExpertPruner(\n",
+      [
+       1,
+       473,
+       8
+      ],
+      [
+       3,
+       236,
+       8
+      ],
+      [
+       3,
+       211,
+       8
+      ],
+      [
+       3,
+       212,
+       8
+      ],
+      [
+       3,
+       213,
+       8
+      ],
+      "        cols_removed_mlp=cols_removed_mlp,\n",
+      [
+       3,
+       214,
+       8
+      ],
+      [
+       3,
+       238,
+       8
+      ],
+      [
+       3,
+       216,
+       8
+      ],
+      [
+       3,
+       217,
+       8
+      ],
+      "        data_loader_factory=calibration_data_factory,\n",
+      [
+       3,
+       218,
+       8
+      ],
+      "        expert_down_proj_regex=args.expert_down_proj_regex,\n",
+      194,
+      "    pruner.struct_prune()\n",
+      "    if dist.is_available() and dist.is_initialized():\n",
+      [
+       3,
+       259,
+       8
+      ],
+      "    print(f\"[MoE][build_db] done: {args.save_dir}\")\n"
+     ]
+    ]
+   ]
+  }
+ ]
+}

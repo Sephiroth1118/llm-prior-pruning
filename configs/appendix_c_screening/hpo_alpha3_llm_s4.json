@@ -1,0 +1,35 @@
+{
+ "name": "hpo_alpha3_llm_s4",
+ "group": "hpo_alpha3_llm",
+ "seed": 4,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "alpha3",
+ "arm": "llm",
+ "late": "uniform",
+ "allow_api": true,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16,
+ "alphabet": [
+  0,
+  1,
+  4
+ ]
+}

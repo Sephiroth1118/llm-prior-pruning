@@ -1,0 +1,12 @@
+{
+ "name": "qwen_classic_cmaes_s7",
+ "group": "qwen_classic_cmaes",
+ "seed": 7,
+ "phase": "CLASSIC-CMAES",
+ "budget": 320,
+ "optimizer": "cmaes",
+ "init_count": 16,
+ "model": "qwen15b",
+ "allow_api": false,
+ "runner": "ar_run_classic.py"
+}

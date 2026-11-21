@@ -1,0 +1,29 @@
+{
+ "name": "llama31_llm_nogp_s7",
+ "group": "llama31_llm_nogp",
+ "seed": 7,
+ "phase": "NOGP_T6",
+ "budget": 320,
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.015,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.015
+ },
+ "mu": 8,
+ "batch": 4,
+ "init_count": 16,
+ "model": "llama31",
+ "pair": "llama_tuned_llm_s7"
+}

@@ -1,0 +1,26 @@
+{
+ "name": "hpo_rounds1x4_llm_s0",
+ "group": "hpo_rounds1x4_llm",
+ "seed": 0,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "rounds1x4",
+ "arm": "llm",
+ "late": "uniform",
+ "allow_api": true,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 4
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16
+}

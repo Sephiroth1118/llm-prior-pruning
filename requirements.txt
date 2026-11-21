@@ -1,0 +1,22 @@
+# Search, evaluation and analysis environment (CPU import checks need only the packages below; GPU runs need CUDA builds).
+# Versions are those of the environment the experiments ran in, except where noted.
+torch==2.6.0
+transformers==4.45.2
+accelerate==1.13.0
+datasets==4.8.4
+tokenizers==0.20.3
+safetensors==0.7.0
+sentencepiece==0.2.1
+huggingface_hub==0.36.2
+pyarrow>=23.0.1
+numpy==1.26.4
+scipy==1.15.3
+scikit-learn==1.7.2
+pandas==2.3.3
+PyYAML==6.0.3
+tqdm
+packaging
+matplotlib>=3.5        # figures in analysis/
+openai>=2.31.0         # only when an LLM is called (OPENAI_API_KEY / DEEPSEEK_API_KEY)
+deepspeed==0.18.9      # recovery training only
+lm_eval==0.4.11        # see requirements-benchmark.txt for the downstream benchmark environment

@@ -1,0 +1,38 @@
+{
+ "name": "hpo_rounds4x1_random_s1",
+ "group": "hpo_rounds4x1_random",
+ "seed": 1,
+ "phase": "HPO",
+ "budget": 320,
+ "variant": "rounds4x1",
+ "arm": "random",
+ "late": "uniform",
+ "allow_api": false,
+ "rounds": [
+  {
+   "source": "random",
+   "n": 1
+  },
+  {
+   "source": "random",
+   "n": 1
+  },
+  {
+   "source": "random",
+   "n": 1
+  },
+  {
+   "source": "random",
+   "n": 1
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16
+}

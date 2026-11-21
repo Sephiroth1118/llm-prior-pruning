@@ -1,0 +1,15 @@
+work/
+__pycache__/
+*.pyc
+
+# restored from DarwinLM by third_party/darwinlm/restore.py (not redistributed)
+experiments/struct_prune.py
+experiments/struct_prune_legacy.py
+zipprune/struct_pruner.py
+zipprune/fast_obc_struct.py
+zipprune/legacy/struct_pruner.py
+zipprune/legacy/fast_obc_struct.py
+evoprune/struct_cap.py
+evoprune/MoE/struct_pruner.py
+evoprune/MoE/fast_obc_struct.py
+evoprune/MoE/cli_build_db.py

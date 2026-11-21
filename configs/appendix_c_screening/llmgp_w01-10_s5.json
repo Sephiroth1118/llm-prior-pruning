@@ -1,0 +1,36 @@
+{
+ "name": "llmgp_w01-10_s5",
+ "group": "llmgp_w01-10",
+ "seed": 5,
+ "phase": "CONFIRM",
+ "budget": 1000,
+ "allow_api": true,
+ "rounds": [
+  {
+   "source": "llm",
+   "n": 2
+  },
+  {
+   "source": "llm",
+   "n": 2
+  }
+ ],
+ "refine_budget": 16,
+ "refine_strength": 0.0075,
+ "ea": {
+  "schedule": "fixed",
+  "start": 0.0075
+ },
+ "mu": 8,
+ "batch": 8,
+ "init_count": 16,
+ "gp": {
+  "warmup": 80,
+  "interval": 80,
+  "window": 80,
+  "minimum_pairs": 8,
+  "program": "corrected_transfer_rule",
+  "min_weight": 0.1,
+  "max_weight": 10.0
+ }
+}
