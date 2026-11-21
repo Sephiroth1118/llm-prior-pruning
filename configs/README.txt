@@ -34,8 +34,13 @@ Files per folder (1,083 job files in total)
                                        read through benchmark/<model>/<job>/benchmark_results.json and reports/benchmark/metrics.json
   recovery/                        4   post-pruning recovery training jobs (llmpruner, llmpruner_official, ours, uniform)
   appendix_c_screening/          233   Appendix C hyperparameter screening on Qwen2.5-1.5B: 180 one-factor screening searches (hpo_*) and
-                                       53 confirmation searches (llmgp_*, tuned2*, tuned3*); the reference configurations they are compared
-                                       with are runs of the main matrix (see the paper's appendix)
+                                       53 later searches (tuned2_*, tuned3_*, tuned2gp_*, llmgp_*). The reference runs of the
+                                       screening (baseline_fixed, llm_orig, random_orig: 8 children, step 0.75%) are not included;
+                                       hpo_mu16_* (mu = 16, which changes nothing) can stand in for them: where both are available, its
+                                       first 320 evaluations equal those of the reference. tuned2_* (4 children, step 1.5%) and
+                                       tuned3_baseline (also mu = 4) are the confirmation runs; tuned2gp_* add guided mutation
+                                       (tuned2gp_baseline is the EA with guided mutation of Section 4); llmgp_* vary the guided mutation
+                                       and are not reported in the paper.
 Each job file equals the job.json stored in its run directory. The 18 runs tuned2gp_baseline_s* and tuned2gp_random_s*
 belong to two parts of the paper, so each of them has a copy in appendix_c_screening/ and one in section4_optimizers/ or
 guided_snapshot/; the two copies are identical (1,065 distinct runs and own_template.json).

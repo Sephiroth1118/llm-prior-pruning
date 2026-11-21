@@ -172,7 +172,9 @@ python run_job.py --job ../configs/section6_plain_ea/llama31/llama31_llm_nogp_s0
 ```
 
 (`run_job.py` picks `run_qwen15b.py`, `run_llama31.py`, `run_model.py`, `run_classic.py` or `run_olmoe.py`.)
-Runs with LLM calls need `"allow_api": true` in the job and an API key; with stored responses (`work/api/`) they replay without requests.
+Searches with LLM templates request new responses only with `"allow_api": true` in the job and an API key; the LLM
+optimizer (`run_classic.py`) requests a response whenever it is not stored and an API key is set. With stored responses
+(`work/api/`) both replay without requests.
 
 | Paper part | Code | Job files |
 |---|---|---|
